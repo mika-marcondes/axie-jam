@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://bhop0hyoha12f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_brmbs"]
+size = Vector3(30, 0.2, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dbjuf"]
+albedo_color = Color(0.19990295, 0.27517748, 0.4130985, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dbjuf"]
+material = SubResource("StandardMaterial3D_dbjuf")
+size = Vector3(30, 0.2, 30)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_brmbs"]
+height = 1.5
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_brmbs"]
+height = 1.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_brmbs"]
+
+[node name="ContestGreybox" type="Node3D" unique_id=1564593338]
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=27720150]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1930990869]
+shape = SubResource("BoxShape3D_brmbs")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1606233368]
+mesh = SubResource("BoxMesh_dbjuf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=372623840]
+transform = Transform3D(1, 0, 0, 0, -0.021672308, 0.99976516, 0, -0.99976516, -0.021672308, 0, 18.257147, 0)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1367971218]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 6.0559206)
+
+[node name="PlayerRig" type="CharacterBody3D" parent="." unique_id=1734650220]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1195245, -1.8688009)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerRig" unique_id=663183403]
+mesh = SubResource("CapsuleMesh_brmbs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerRig" unique_id=1012639119]
+shape = SubResource("CapsuleShape3D_brmbs")
+
+[node name="Ball" type="Node3D" parent="." unique_id=2101237981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4650292, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ball" unique_id=1391761997]
+mesh = SubResource("SphereMesh_brmbs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball" unique_id=1366373041]
+shape = SubResource("SphereShape3D_brmbs")
