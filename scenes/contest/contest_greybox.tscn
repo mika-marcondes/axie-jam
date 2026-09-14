@@ -36,8 +36,9 @@ transform = Transform3D(1, 0, 0, 0, -0.021672308, 0.99976516, 0, -0.99976516, -0
 [node name="Player" parent="." unique_id=1086016846 instance=ExtResource("1_r5vmv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1195245, -1.8688009)
 
-[node name="Ball" parent="." unique_id=1570341470 instance=ExtResource("2_ccxh4")]
+[node name="Ball" parent="." unique_id=1570341470 node_paths=PackedStringArray("movement_reference") instance=ExtResource("2_ccxh4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4650292, 0)
+movement_reference = NodePath("../CameraRig/YawPivot")
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=215474228 node_paths=PackedStringArray("target")]
 script = ExtResource("4_aps6a")
