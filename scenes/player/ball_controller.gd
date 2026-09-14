@@ -11,8 +11,13 @@ class_name BallController
 @export var radius: float = 0.5
 
 @export_category("Jump")
-@export var jump_velocity: float = 7.0
+@export var jump_velocity: float = 6.0
+@export var charged_jump_velocity: float = 11.0
+@export var max_charge_time: float = 0.75
 @export_range(0.0, 1.0, 0.05) var air_control: float = 0.35
+
+var jump_charge_time: float = 0.0
+var is_charging_jump: bool = false
 
 @export_category("References")
 @export var movement_reference: Node3D
@@ -23,7 +28,7 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
 func _physics_process(delta: float) -> void:
-	handle_jump()
+	handle_jump(delta)
 	apply_gravity(delta)
 	handle_movement(delta)
 
@@ -33,9 +38,43 @@ func _physics_process(delta: float) -> void:
 	check_fall_reset()
 
 
-func handle_jump() -> void:
+func handle_jump(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = jump_velocity
+		is_charging_jump = true
+		jump_charge_time = 0.0
+
+	if not is_charging_jump:
+		return
+
+	if not is_on_floor():
+		reset_jump_charge()
+		return
+
+	if Input.is_action_pressed("jump"):
+		jump_charge_time = minf(
+			jump_charge_time + delta,
+			max_charge_time
+		)
+
+	if Input.is_action_just_released("jump"):
+		var charge_ratio: float = clampf(
+			jump_charge_time / maxf(max_charge_time, 0.001),
+			0.0,
+			1.0
+		)
+
+		velocity.y = lerpf(
+			jump_velocity,
+			charged_jump_velocity,
+			charge_ratio
+		)
+
+		reset_jump_charge()
+
+
+func reset_jump_charge() -> void:
+	is_charging_jump = false
+	jump_charge_time = 0.0
 
 
 func check_fall_reset() -> void:

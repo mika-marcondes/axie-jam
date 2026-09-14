@@ -77,3 +77,24 @@ text = "Air Control"
 
 [node name="AirControlSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1646643526]
 layout_mode = 2
+
+[node name="ChargedJumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1294541028]
+layout_mode = 2
+text = "Charged Jump Velocity"
+
+[node name="ChargedJumpVelocitySlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1585915522]
+layout_mode = 2
+
+[node name="MaxChargeTimeValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1382074735]
+layout_mode = 2
+text = "Max Charge Time"
+
+[node name="MaxChargeTimeSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1041899629]
+layout_mode = 2
+
+[node name="JumpStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1087846202]
+layout_mode = 2
+text = "Jump Status"
+
+[node name="JumpChargeBar" type="ProgressBar" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=124955278]
+layout_mode = 2

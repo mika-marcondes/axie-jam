@@ -23,6 +23,15 @@ extends CanvasLayer
 @onready var air_control_value: Label = $PanelContainer/MarginContainer/VBoxContainer/AirControlValue
 @onready var air_control_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/AirControlSlider
 
+@onready var charged_jump_velocity_value: Label = $PanelContainer/MarginContainer/VBoxContainer/ChargedJumpVelocityValue
+@onready var charged_jump_velocity_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/ChargedJumpVelocitySlider
+
+@onready var max_charge_time_value: Label = $PanelContainer/MarginContainer/VBoxContainer/MaxChargeTimeValue
+@onready var max_charge_time_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/MaxChargeTimeSlider
+
+@onready var jump_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/JumpStatusLabel
+@onready var jump_charge_bar: ProgressBar = $PanelContainer/MarginContainer/VBoxContainer/JumpChargeBar
+
 var ball: BallController
 
 
@@ -39,11 +48,12 @@ func _process(_delta: float) -> void:
 		return
 
 	var horizontal_speed: float = Vector2(
-		ball.velocity.x,
-		ball.velocity.z
+		ball.velocity.x, ball.velocity.z
 	).length()
 
 	speed_label.text = "Speed: %.2f m/s" % horizontal_speed
+
+	update_jump_debug()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -75,6 +85,14 @@ func setup_sliders() -> void:
 	air_control_slider.min_value = 0.0
 	air_control_slider.max_value = 1.0
 	air_control_slider.step = 0.05
+	
+	charged_jump_velocity_slider.min_value = 4.0
+	charged_jump_velocity_slider.max_value = 20.0
+	charged_jump_velocity_slider.step = 0.25
+
+	max_charge_time_slider.min_value = 0.1
+	max_charge_time_slider.max_value = 2.0
+	max_charge_time_slider.step = 0.05
 
 
 	acceleration_slider.value_changed.connect(_on_acceleration_changed)
@@ -83,7 +101,8 @@ func setup_sliders() -> void:
 	drag_slider.value_changed.connect(_on_drag_changed)
 	jump_velocity_slider.value_changed.connect(_on_jump_velocity_changed)
 	air_control_slider.value_changed.connect(_on_air_control_changed)
-
+	charged_jump_velocity_slider.value_changed.connect(_on_charged_jump_velocity_changed)
+	max_charge_time_slider.value_changed.connect(_on_max_charge_time_changed)
 
 func sync_sliders_from_ball() -> void:
 	if ball == null:
@@ -95,6 +114,8 @@ func sync_sliders_from_ball() -> void:
 	drag_slider.value = ball.drag
 	jump_velocity_slider.value = ball.jump_velocity
 	air_control_slider.value = ball.air_control
+	charged_jump_velocity_slider.value = ball.charged_jump_velocity
+	max_charge_time_slider.value = ball.max_charge_time
 
 
 func update_parameter_labels() -> void:
@@ -107,6 +128,31 @@ func update_parameter_labels() -> void:
 	drag_value.text = "Drag: %.2f" % ball.drag
 	jump_velocity_value.text = "Jump Velocity: %.2f" % ball.jump_velocity
 	air_control_value.text = "Air Control: %.2f" % ball.air_control
+	charged_jump_velocity_value.text = "Charged Jump Velocity: %.2f" % ball.charged_jump_velocity
+	max_charge_time_value.text = "Max Charge Time: %.2f s" % ball.max_charge_time
+
+
+func update_jump_debug() -> void:
+	if ball == null:
+		return
+
+	var charge_ratio: float = clampf(
+		ball.jump_charge_time / maxf(ball.max_charge_time, 0.001),
+		0.0,
+		1.0
+	)
+
+	jump_charge_bar.value = charge_ratio * 100.0
+
+	if ball.is_charging_jump:
+		if charge_ratio >= 1.0:
+			jump_status_label.text = "Jump: FULL"
+		else:
+			jump_status_label.text = "Jump: CHARGING"
+	elif ball.is_on_floor():
+		jump_status_label.text = "Jump: READY"
+	else:
+		jump_status_label.text = "Jump: AIRBORNE"
 
 
 func _on_acceleration_changed(value: float) -> void:
@@ -136,4 +182,14 @@ func _on_jump_velocity_changed(value: float) -> void:
 
 func _on_air_control_changed(value: float) -> void:
 	ball.air_control = value
+	update_parameter_labels()
+
+
+func _on_charged_jump_velocity_changed(value: float) -> void:
+	ball.charged_jump_velocity = value
+	update_parameter_labels()
+
+
+func _on_max_charge_time_changed(value: float) -> void:
+	ball.max_charge_time = value
 	update_parameter_labels()
