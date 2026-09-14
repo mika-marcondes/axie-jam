@@ -19,6 +19,12 @@ class_name BallController
 var jump_charge_time: float = 0.0
 var is_charging_jump: bool = false
 
+@export_category("Bounce")
+@export_range(0.0, 1.0, 0.05) var bounce_retention: float = 0.75
+@export var bounce_input_window: float = 0.15
+
+var bounce_input_timer: float = 0.0
+
 @export_category("References")
 @export var movement_reference: Node3D
 
@@ -28,14 +34,53 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
 func _physics_process(delta: float) -> void:
+	update_bounce_input(delta)
 	handle_jump(delta)
 	apply_gravity(delta)
 	handle_movement(delta)
 
+	var was_on_floor: bool = is_on_floor()
+	var impact_velocity: float = velocity.y
+
 	move_and_slide()
+
+	handle_landing_bounce(was_on_floor, impact_velocity)
 
 	update_visual_rotation(delta)
 	check_fall_reset()
+
+
+func handle_landing_bounce(
+	was_on_floor: bool,
+	impact_velocity: float
+) -> void:
+	if was_on_floor or not is_on_floor():
+		return
+
+	if bounce_input_timer <= 0.0:
+		return
+
+	var impact_speed: float = maxf(-impact_velocity, 0.0)
+	var bounce_velocity: float = impact_speed * bounce_retention
+
+	var min_bounce_velocity: float = jump_velocity * 0.75
+	var max_bounce_velocity: float = charged_jump_velocity
+
+	bounce_velocity = clampf(
+		bounce_velocity,
+		min_bounce_velocity,
+		max_bounce_velocity
+	)
+
+	velocity.y = bounce_velocity
+	bounce_input_timer = 0.0
+
+
+func update_bounce_input(delta: float) -> void:
+	bounce_input_timer = maxf(bounce_input_timer - delta, 0.0)
+
+	if Input.is_action_just_pressed("jump") and not is_on_floor():
+		bounce_input_timer = bounce_input_window
 
 
 func handle_jump(delta: float) -> void:

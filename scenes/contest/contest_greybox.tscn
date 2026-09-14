@@ -47,7 +47,7 @@ target = NodePath("../Ball")
 [node name="YawPivot" type="Node3D" parent="CameraRig" unique_id=513869149]
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig/YawPivot" unique_id=1367971218]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 5)
 current = true
 
 [node name="DevUI" parent="." unique_id=1027784577 instance=ExtResource("5_dc481")]

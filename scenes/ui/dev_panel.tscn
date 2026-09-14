@@ -98,3 +98,21 @@ text = "Jump Status"
 
 [node name="JumpChargeBar" type="ProgressBar" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=124955278]
 layout_mode = 2
+
+[node name="BounceStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1758656371]
+layout_mode = 2
+text = "Bounce Status"
+
+[node name="BounceRetentionValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=656562463]
+layout_mode = 2
+text = "Bounce Retention"
+
+[node name="BounceRetentionSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1963066247]
+layout_mode = 2
+
+[node name="BounceInputWindowValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=682910045]
+layout_mode = 2
+text = "Bounce Input Window"
+
+[node name="BounceInputWindowSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1427369711]
+layout_mode = 2

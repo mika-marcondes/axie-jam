@@ -32,6 +32,12 @@ extends CanvasLayer
 @onready var jump_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/JumpStatusLabel
 @onready var jump_charge_bar: ProgressBar = $PanelContainer/MarginContainer/VBoxContainer/JumpChargeBar
 
+@onready var bounce_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceStatusLabel
+@onready var bounce_retention_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceRetentionValue
+@onready var bounce_retention_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BounceRetentionSlider
+@onready var bounce_input_window_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceInputWindowValue
+@onready var bounce_input_window_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BounceInputWindowSlider
+
 var ball: BallController
 
 
@@ -54,6 +60,7 @@ func _process(_delta: float) -> void:
 	speed_label.text = "Speed: %.2f m/s" % horizontal_speed
 
 	update_jump_debug()
+	update_bounce_debug()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -93,6 +100,14 @@ func setup_sliders() -> void:
 	max_charge_time_slider.min_value = 0.1
 	max_charge_time_slider.max_value = 2.0
 	max_charge_time_slider.step = 0.05
+	
+	bounce_retention_slider.min_value = 0.0
+	bounce_retention_slider.max_value = 1.0
+	bounce_retention_slider.step = 0.05
+
+	bounce_input_window_slider.min_value = 0.05
+	bounce_input_window_slider.max_value = 0.5
+	bounce_input_window_slider.step = 0.01
 
 
 	acceleration_slider.value_changed.connect(_on_acceleration_changed)
@@ -103,6 +118,9 @@ func setup_sliders() -> void:
 	air_control_slider.value_changed.connect(_on_air_control_changed)
 	charged_jump_velocity_slider.value_changed.connect(_on_charged_jump_velocity_changed)
 	max_charge_time_slider.value_changed.connect(_on_max_charge_time_changed)
+	bounce_retention_slider.value_changed.connect(_on_bounce_retention_changed)
+	bounce_input_window_slider.value_changed.connect(_on_bounce_input_window_changed)
+
 
 func sync_sliders_from_ball() -> void:
 	if ball == null:
@@ -116,6 +134,8 @@ func sync_sliders_from_ball() -> void:
 	air_control_slider.value = ball.air_control
 	charged_jump_velocity_slider.value = ball.charged_jump_velocity
 	max_charge_time_slider.value = ball.max_charge_time
+	bounce_retention_slider.value = ball.bounce_retention
+	bounce_input_window_slider.value = ball.bounce_input_window
 
 
 func update_parameter_labels() -> void:
@@ -130,6 +150,8 @@ func update_parameter_labels() -> void:
 	air_control_value.text = "Air Control: %.2f" % ball.air_control
 	charged_jump_velocity_value.text = "Charged Jump Velocity: %.2f" % ball.charged_jump_velocity
 	max_charge_time_value.text = "Max Charge Time: %.2f s" % ball.max_charge_time
+	bounce_retention_value.text = "Bounce Retention: %.2f" % ball.bounce_retention
+	bounce_input_window_value.text = "Bounce Input Window: %.2f s" % ball.bounce_input_window
 
 
 func update_jump_debug() -> void:
@@ -153,6 +175,18 @@ func update_jump_debug() -> void:
 		jump_status_label.text = "Jump: READY"
 	else:
 		jump_status_label.text = "Jump: AIRBORNE"
+
+
+func update_bounce_debug() -> void:
+	if ball == null:
+		return
+
+	if ball.bounce_input_timer > 0.0:
+		bounce_status_label.text = "Bounce: BUFFERED (%.2f s)" % ball.bounce_input_timer
+	elif ball.is_on_floor():
+		bounce_status_label.text = "Bounce: READY"
+	else:
+		bounce_status_label.text = "Bounce: WAITING"
 
 
 func _on_acceleration_changed(value: float) -> void:
@@ -192,4 +226,14 @@ func _on_charged_jump_velocity_changed(value: float) -> void:
 
 func _on_max_charge_time_changed(value: float) -> void:
 	ball.max_charge_time = value
+	update_parameter_labels()
+
+
+func _on_bounce_retention_changed(value: float) -> void:
+	ball.bounce_retention = value
+	update_parameter_labels()
+
+
+func _on_bounce_input_window_changed(value: float) -> void:
+	ball.bounce_input_window = value
 	update_parameter_labels()
