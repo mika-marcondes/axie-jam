@@ -25,6 +25,13 @@ var is_charging_jump: bool = false
 
 var bounce_input_timer: float = 0.0
 
+@export_category("Boost")
+@export var boost_acceleration_multiplier: float = 1.6
+@export var boost_max_speed_multiplier: float = 1.4
+@export var boost_release_deceleration: float = 4.0
+
+var is_boosting: bool = false
+
 @export_category("References")
 @export var movement_reference: Node3D
 
@@ -152,17 +159,39 @@ func handle_movement(delta: float) -> void:
 		velocity.x, 0.0, velocity.z
 	)
 
+	var has_movement_input: bool = input_direction.length_squared() > 0.0
+	is_boosting = Input.is_action_pressed("boost") and is_on_floor() and has_movement_input
+
+	var current_acceleration: float = acceleration
+	var current_max_speed: float = max_speed
 	var control_multiplier: float = 1.0
+
+	if is_boosting:
+		current_acceleration *= boost_acceleration_multiplier
+		current_max_speed *= boost_max_speed_multiplier
 
 	if not is_on_floor():
 		control_multiplier = air_control
 
-	if input_direction.length_squared() > 0.0:
+	# Gradually return boosted speed toward the normal ground speed.
+	if is_on_floor() and not is_boosting and horizontal_velocity.length() > max_speed:
+		var current_speed: float = horizontal_velocity.length()
+		var reduced_speed: float = move_toward(
+			current_speed, max_speed, boost_release_deceleration * delta
+		)
+
+		horizontal_velocity = horizontal_velocity.normalized() * reduced_speed
+
+	if has_movement_input:
 		input_direction = input_direction.normalized()
+
+		# Preserve existing overspeed instead of snapping back to the speed cap.
+		var speed_before_input: float = horizontal_velocity.length()
+		var allowed_speed: float = maxf(current_max_speed, speed_before_input)
 
 		if horizontal_velocity.length() < 0.1:
 			horizontal_velocity += (
-				input_direction * acceleration * control_multiplier * delta
+				input_direction * current_acceleration * control_multiplier * delta
 			)
 		else:
 			var momentum_direction: Vector3 = horizontal_velocity.normalized()
@@ -174,19 +203,19 @@ func handle_movement(delta: float) -> void:
 			var lateral_input: Vector3 = input_direction - parallel_input
 
 			horizontal_velocity += (
-				parallel_input * acceleration * control_multiplier * delta
+				parallel_input * current_acceleration * control_multiplier * delta
 			)
 
 			horizontal_velocity += (
 				lateral_input
-				* acceleration
+				* current_acceleration
 				* steering
 				* control_multiplier
 				* delta
 			)
 
-		if horizontal_velocity.length() > max_speed:
-			horizontal_velocity = horizontal_velocity.normalized() * max_speed
+		if horizontal_velocity.length() > allowed_speed:
+			horizontal_velocity = horizontal_velocity.normalized() * allowed_speed
 
 	elif is_on_floor():
 		horizontal_velocity = horizontal_velocity.move_toward(
