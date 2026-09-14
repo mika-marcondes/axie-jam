@@ -25,8 +25,12 @@ theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=487640015]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.06776283, 0.828768, 0, 1)
+theme_override_colors/font_color = Color(0.06666667, 0.827451, 0, 1)
 text = "DEV MODE"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=133646664]
+modulate = Color(0.06666667, 0.827451, 0, 1)
+layout_mode = 2
 
 [node name="SpeedLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1231532894]
 layout_mode = 2
@@ -58,4 +62,18 @@ layout_mode = 2
 text = "Drag"
 
 [node name="DragSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=668699578]
+layout_mode = 2
+
+[node name="JumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=2124454754]
+layout_mode = 2
+text = "Jump Velocity"
+
+[node name="JumpVelocitySlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1131569550]
+layout_mode = 2
+
+[node name="AirControlValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1082714415]
+layout_mode = 2
+text = "Air Control"
+
+[node name="AirControlSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1646643526]
 layout_mode = 2

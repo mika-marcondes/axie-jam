@@ -17,6 +17,12 @@ extends CanvasLayer
 @onready var drag_value: Label = $PanelContainer/MarginContainer/VBoxContainer/DragValue
 @onready var drag_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/DragSlider
 
+@onready var jump_velocity_value: Label = $PanelContainer/MarginContainer/VBoxContainer/JumpVelocityValue
+@onready var jump_velocity_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/JumpVelocitySlider
+
+@onready var air_control_value: Label = $PanelContainer/MarginContainer/VBoxContainer/AirControlValue
+@onready var air_control_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/AirControlSlider
+
 var ball: BallController
 
 
@@ -62,10 +68,21 @@ func setup_sliders() -> void:
 	drag_slider.max_value = 20.0
 	drag_slider.step = 0.5
 
+	jump_velocity_slider.min_value = 2.0
+	jump_velocity_slider.max_value = 15.0
+	jump_velocity_slider.step = 0.25
+
+	air_control_slider.min_value = 0.0
+	air_control_slider.max_value = 1.0
+	air_control_slider.step = 0.05
+
+
 	acceleration_slider.value_changed.connect(_on_acceleration_changed)
 	max_speed_slider.value_changed.connect(_on_max_speed_changed)
 	steering_slider.value_changed.connect(_on_steering_changed)
 	drag_slider.value_changed.connect(_on_drag_changed)
+	jump_velocity_slider.value_changed.connect(_on_jump_velocity_changed)
+	air_control_slider.value_changed.connect(_on_air_control_changed)
 
 
 func sync_sliders_from_ball() -> void:
@@ -76,6 +93,8 @@ func sync_sliders_from_ball() -> void:
 	max_speed_slider.value = ball.max_speed
 	steering_slider.value = ball.steering
 	drag_slider.value = ball.drag
+	jump_velocity_slider.value = ball.jump_velocity
+	air_control_slider.value = ball.air_control
 
 
 func update_parameter_labels() -> void:
@@ -86,6 +105,8 @@ func update_parameter_labels() -> void:
 	max_speed_value.text = "Max Speed: %.2f" % ball.max_speed
 	steering_value.text = "Steering: %.2f" % ball.steering
 	drag_value.text = "Drag: %.2f" % ball.drag
+	jump_velocity_value.text = "Jump Velocity: %.2f" % ball.jump_velocity
+	air_control_value.text = "Air Control: %.2f" % ball.air_control
 
 
 func _on_acceleration_changed(value: float) -> void:
@@ -105,4 +126,14 @@ func _on_steering_changed(value: float) -> void:
 
 func _on_drag_changed(value: float) -> void:
 	ball.drag = value
+	update_parameter_labels()
+
+
+func _on_jump_velocity_changed(value: float) -> void:
+	ball.jump_velocity = value
+	update_parameter_labels()
+
+
+func _on_air_control_changed(value: float) -> void:
+	ball.air_control = value
 	update_parameter_labels()

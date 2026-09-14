@@ -10,12 +10,17 @@ class_name BallController
 @export_category("Ball")
 @export var radius: float = 0.5
 
+@export_category("Jump")
+@export var jump_velocity: float = 7.0
+@export_range(0.0, 1.0, 0.05) var air_control: float = 0.35
+
 @onready var visual: Node3D = $Visual
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
 func _physics_process(delta: float) -> void:
+	handle_jump()
 	apply_gravity(delta)
 	handle_movement(delta)
 
@@ -23,6 +28,11 @@ func _physics_process(delta: float) -> void:
 
 	update_visual_rotation(delta)
 	check_fall_reset()
+
+
+func handle_jump() -> void:
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = jump_velocity
 
 
 func check_fall_reset() -> void:
@@ -38,35 +48,73 @@ func handle_movement(delta: float) -> void:
 		"move_back"
 	)
 
-	var input_direction := Vector3(input.x, 0.0, input.y)
+	var input_direction: Vector3 = Vector3(
+		input.x,
+		0.0,
+		input.y
+	)
 
-	var horizontal_velocity := Vector3(
+	var horizontal_velocity: Vector3 = Vector3(
 		velocity.x,
 		0.0,
 		velocity.z
 	)
 
+	var control_multiplier: float = 1.0
+
+	if not is_on_floor():
+		control_multiplier = air_control
+
 	if input_direction.length_squared() > 0.0:
 		input_direction = input_direction.normalized()
 
 		if horizontal_velocity.length() < 0.1:
-			horizontal_velocity += input_direction * acceleration * delta
+			horizontal_velocity += (
+				input_direction
+				* acceleration
+				* control_multiplier
+				* delta
+			)
 		else:
-			var momentum_direction := horizontal_velocity.normalized()
+			var momentum_direction: Vector3 = horizontal_velocity.normalized()
 
 			# Split the input into acceleration along the current momentum
 			# and steering perpendicular to it.
 			var parallel_amount: float = input_direction.dot(momentum_direction)
-			var parallel_input: Vector3 = momentum_direction * parallel_amount
-			var lateral_input: Vector3 = input_direction - parallel_input
 
-			horizontal_velocity += parallel_input * acceleration * delta
-			horizontal_velocity += lateral_input * acceleration * steering * delta
+			var parallel_input: Vector3 = (
+				momentum_direction
+				* parallel_amount
+			)
+
+			var lateral_input: Vector3 = (
+				input_direction
+				- parallel_input
+			)
+
+			horizontal_velocity += (
+				parallel_input
+				* acceleration
+				* control_multiplier
+				* delta
+			)
+
+			horizontal_velocity += (
+				lateral_input
+				* acceleration
+				* steering
+				* control_multiplier
+				* delta
+			)
 
 		if horizontal_velocity.length() > max_speed:
-			horizontal_velocity = horizontal_velocity.normalized() * max_speed
+			horizontal_velocity = (
+				horizontal_velocity.normalized()
+				* max_speed
+			)
 
-	else:
+	elif is_on_floor():
+		# Apply drag only while grounded.
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
 			drag * delta
