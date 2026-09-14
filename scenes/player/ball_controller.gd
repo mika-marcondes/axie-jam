@@ -1,9 +1,10 @@
 extends CharacterBody3D
+class_name BallController
 
 @export_category("Movement")
 @export var acceleration: float = 14.0
 @export var max_speed: float = 10.0
-@export var steering: float = 5.0
+@export var steering: float = 1.0
 @export var drag: float = 6.0
 
 @export_category("Ball")
@@ -21,6 +22,12 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	update_visual_rotation(delta)
+	check_fall_reset()
+
+
+func check_fall_reset() -> void:
+	if global_position.y < -10.0:
+		get_tree().reload_current_scene()
 
 
 func handle_movement(delta: float) -> void:
@@ -42,16 +49,24 @@ func handle_movement(delta: float) -> void:
 	if input_direction.length_squared() > 0.0:
 		input_direction = input_direction.normalized()
 
-		# Apply acceleration to the existing momentum instead of
-		# directly replacing or rotating the velocity.
-		horizontal_velocity += input_direction * acceleration * delta
+		if horizontal_velocity.length() < 0.1:
+			horizontal_velocity += input_direction * acceleration * delta
+		else:
+			var momentum_direction := horizontal_velocity.normalized()
 
-		# Keep the horizontal speed within the configured limit.
+			# Split the input into acceleration along the current momentum
+			# and steering perpendicular to it.
+			var parallel_amount: float = input_direction.dot(momentum_direction)
+			var parallel_input: Vector3 = momentum_direction * parallel_amount
+			var lateral_input: Vector3 = input_direction - parallel_input
+
+			horizontal_velocity += parallel_input * acceleration * delta
+			horizontal_velocity += lateral_input * acceleration * steering * delta
+
 		if horizontal_velocity.length() > max_speed:
 			horizontal_velocity = horizontal_velocity.normalized() * max_speed
 
 	else:
-		# Preserve momentum while gradually slowing the ball down.
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
 			drag * delta

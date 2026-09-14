@@ -4,20 +4,21 @@
 [ext_resource type="PackedScene" uid="uid://dveyac02bqln8" path="res://scenes/player/player.tscn" id="1_r5vmv"]
 [ext_resource type="PackedScene" uid="uid://diill28ak0gww" path="res://scenes/player/ball.tscn" id="2_ccxh4"]
 [ext_resource type="Script" uid="uid://br0hfpbv8lnf1" path="res://scripts/camera/camera_rig.gd" id="4_aps6a"]
+[ext_resource type="PackedScene" uid="uid://bfrpeh1opo6n5" path="res://scenes/ui/dev_panel.tscn" id="5_dc481"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_brmbs"]
-size = Vector3(30, 0.2, 30)
+size = Vector3(200, 0.2, 200)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jxcsf"]
 render_priority = 0
 shader = ExtResource("1_ccxh4")
 shader_parameter/color_a = Color(0.15487581, 0.15487596, 0.15487641, 1)
 shader_parameter/color_b = Color(0.1, 0.1, 0.1, 1)
-shader_parameter/checker_scale = 8.0
+shader_parameter/checker_scale = 20.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_dbjuf"]
 material = SubResource("ShaderMaterial_jxcsf")
-size = Vector3(30, 0.2, 30)
+size = Vector3(200, 0.2, 200)
 
 [node name="ContestGreybox" type="Node3D" unique_id=1564593338]
 
@@ -45,3 +46,6 @@ target = NodePath("../Ball")
 [node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=1367971218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5)
 current = true
+
+[node name="DevUI" parent="." unique_id=1027784577 instance=ExtResource("5_dc481")]
+ball_path = NodePath("../Ball")

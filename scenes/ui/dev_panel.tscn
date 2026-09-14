@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://bfrpeh1opo6n5"]
+
+[ext_resource type="Script" uid="uid://3p44cxcxljq1" path="res://scripts/ui/dev_panel.gd" id="1_mrjit"]
+
+[node name="DevUI" type="CanvasLayer" unique_id=1027784577]
+script = ExtResource("1_mrjit")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=507723578]
+self_modulate = Color(0.5, 0.5, 0.5, 0.64705884)
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 336.0
+offset_bottom = 16.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1089912199]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=304131301]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=487640015]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.06776283, 0.828768, 0, 1)
+text = "DEV MODE"
+
+[node name="SpeedLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1231532894]
+layout_mode = 2
+text = "Speed"
+
+[node name="AccelerationValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=688424877]
+layout_mode = 2
+text = "Aceleration"
+
+[node name="AccelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=906112083]
+layout_mode = 2
+
+[node name="MaxSpeedValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1348946204]
+layout_mode = 2
+text = "Max Speed"
+
+[node name="MaxSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=629630724]
+layout_mode = 2
+
+[node name="SteeringValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1816971821]
+layout_mode = 2
+text = "Steering"
+
+[node name="SteeringSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1552976203]
+layout_mode = 2
+
+[node name="DragValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=422573180]
+layout_mode = 2
+text = "Drag"
+
+[node name="DragSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=668699578]
+layout_mode = 2
