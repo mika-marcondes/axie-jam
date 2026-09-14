@@ -64,6 +64,9 @@ text = "Drag"
 [node name="DragSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=668699578]
 layout_mode = 2
 
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1314410339]
+layout_mode = 2
+
 [node name="JumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=2124454754]
 layout_mode = 2
 text = "Jump Velocity"
@@ -99,6 +102,9 @@ text = "Jump Status"
 [node name="JumpChargeBar" type="ProgressBar" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=124955278]
 layout_mode = 2
 
+[node name="HSeparator3" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=455096786]
+layout_mode = 2
+
 [node name="BounceStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1758656371]
 layout_mode = 2
 text = "Bounce Status"
@@ -115,4 +121,32 @@ layout_mode = 2
 text = "Bounce Input Window"
 
 [node name="BounceInputWindowSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1427369711]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1059290861]
+layout_mode = 2
+
+[node name="BoostStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=153576105]
+layout_mode = 2
+text = "Boost Status"
+
+[node name="BoostAccelerationMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1158591011]
+layout_mode = 2
+text = "Boost Acceleration Mult."
+
+[node name="BoostAccelerationMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1366732974]
+layout_mode = 2
+
+[node name="BoostMaxSpeedMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=710449533]
+layout_mode = 2
+text = "Boost Max Speed Mult."
+
+[node name="BoostMaxSpeedMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1391930641]
+layout_mode = 2
+
+[node name="BoostReleaseDecelerationValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1093313497]
+layout_mode = 2
+text = "Boost Release Deceleration"
+
+[node name="BoostReleaseDecelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=232355063]
 layout_mode = 2

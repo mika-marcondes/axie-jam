@@ -38,6 +38,17 @@ extends CanvasLayer
 @onready var bounce_input_window_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceInputWindowValue
 @onready var bounce_input_window_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BounceInputWindowSlider
 
+@onready var boost_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostStatusLabel
+
+@onready var boost_acceleration_multiplier_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostAccelerationMultiplierValue
+@onready var boost_acceleration_multiplier_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BoostAccelerationMultiplierSlider
+
+@onready var boost_max_speed_multiplier_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostMaxSpeedMultiplierValue
+@onready var boost_max_speed_multiplier_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BoostMaxSpeedMultiplierSlider
+
+@onready var boost_release_deceleration_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostReleaseDecelerationValue
+@onready var boost_release_deceleration_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BoostReleaseDecelerationSlider
+
 var ball: BallController
 
 
@@ -61,6 +72,7 @@ func _process(_delta: float) -> void:
 
 	update_jump_debug()
 	update_bounce_debug()
+	update_boost_debug()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -108,6 +120,18 @@ func setup_sliders() -> void:
 	bounce_input_window_slider.min_value = 0.05
 	bounce_input_window_slider.max_value = 0.5
 	bounce_input_window_slider.step = 0.01
+	
+	boost_acceleration_multiplier_slider.min_value = 1.0
+	boost_acceleration_multiplier_slider.max_value = 3.0
+	boost_acceleration_multiplier_slider.step = 0.05
+
+	boost_max_speed_multiplier_slider.min_value = 1.0
+	boost_max_speed_multiplier_slider.max_value = 2.5
+	boost_max_speed_multiplier_slider.step = 0.05
+
+	boost_release_deceleration_slider.min_value = 0.0
+	boost_release_deceleration_slider.max_value = 15.0
+	boost_release_deceleration_slider.step = 0.25
 
 
 	acceleration_slider.value_changed.connect(_on_acceleration_changed)
@@ -120,6 +144,15 @@ func setup_sliders() -> void:
 	max_charge_time_slider.value_changed.connect(_on_max_charge_time_changed)
 	bounce_retention_slider.value_changed.connect(_on_bounce_retention_changed)
 	bounce_input_window_slider.value_changed.connect(_on_bounce_input_window_changed)
+	boost_acceleration_multiplier_slider.value_changed.connect(
+		_on_boost_acceleration_multiplier_changed
+	)
+	boost_max_speed_multiplier_slider.value_changed.connect(
+		_on_boost_max_speed_multiplier_changed
+	)
+	boost_release_deceleration_slider.value_changed.connect(
+		_on_boost_release_deceleration_changed
+	)
 
 
 func sync_sliders_from_ball() -> void:
@@ -136,6 +169,9 @@ func sync_sliders_from_ball() -> void:
 	max_charge_time_slider.value = ball.max_charge_time
 	bounce_retention_slider.value = ball.bounce_retention
 	bounce_input_window_slider.value = ball.bounce_input_window
+	boost_acceleration_multiplier_slider.value = ball.boost_acceleration_multiplier
+	boost_max_speed_multiplier_slider.value = ball.boost_max_speed_multiplier
+	boost_release_deceleration_slider.value = ball.boost_release_deceleration
 
 
 func update_parameter_labels() -> void:
@@ -152,6 +188,17 @@ func update_parameter_labels() -> void:
 	max_charge_time_value.text = "Max Charge Time: %.2f s" % ball.max_charge_time
 	bounce_retention_value.text = "Bounce Retention: %.2f" % ball.bounce_retention
 	bounce_input_window_value.text = "Bounce Input Window: %.2f s" % ball.bounce_input_window
+	boost_acceleration_multiplier_value.text = (
+	"Boost Acceleration: %.2fx" % ball.boost_acceleration_multiplier
+	)
+
+	boost_max_speed_multiplier_value.text = (
+		"Boost Max Speed: %.2fx" % ball.boost_max_speed_multiplier
+	)
+
+	boost_release_deceleration_value.text = (
+		"Boost Release Deceleration: %.2f" % ball.boost_release_deceleration
+	)
 
 
 func update_jump_debug() -> void:
@@ -187,6 +234,18 @@ func update_bounce_debug() -> void:
 		bounce_status_label.text = "Bounce: READY"
 	else:
 		bounce_status_label.text = "Bounce: WAITING"
+
+
+func update_boost_debug() -> void:
+	if ball == null:
+		return
+
+	if ball.is_boosting:
+		boost_status_label.text = "Boost: ACTIVE"
+	elif ball.is_on_floor():
+		boost_status_label.text = "Boost: READY"
+	else:
+		boost_status_label.text = "Boost: AIRBORNE"
 
 
 func _on_acceleration_changed(value: float) -> void:
@@ -236,4 +295,19 @@ func _on_bounce_retention_changed(value: float) -> void:
 
 func _on_bounce_input_window_changed(value: float) -> void:
 	ball.bounce_input_window = value
+	update_parameter_labels()
+
+
+func _on_boost_acceleration_multiplier_changed(value: float) -> void:
+	ball.boost_acceleration_multiplier = value
+	update_parameter_labels()
+
+
+func _on_boost_max_speed_multiplier_changed(value: float) -> void:
+	ball.boost_max_speed_multiplier = value
+	update_parameter_labels()
+
+
+func _on_boost_release_deceleration_changed(value: float) -> void:
+	ball.boost_release_deceleration = value
 	update_parameter_labels()
