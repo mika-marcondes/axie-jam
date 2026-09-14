@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://diill28ak0gww"]
+
+[ext_resource type="Script" uid="uid://cpndixow04ijj" path="res://scenes/player/ball_controller.gd" id="1_jxf6l"]
+[ext_resource type="Shader" uid="uid://ce5wwmpkopvmh" path="res://scenes/player/ball.gdshader" id="2_jxcsf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r5vmv"]
+render_priority = 0
+shader = ExtResource("2_jxcsf")
+shader_parameter/color_a = Color(0.95, 0.342, 0.342, 1)
+shader_parameter/color_b = Color(0.63, 0.10710001, 0.22910988, 1)
+shader_parameter/checker_scale = 8.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
+material = SubResource("ShaderMaterial_r5vmv")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_brmbs"]
+
+[node name="Ball" type="CharacterBody3D" unique_id=1570341470]
+script = ExtResource("1_jxf6l")
+
+[node name="Visual" type="MeshInstance3D" parent="." unique_id=1375038441]
+mesh = SubResource("SphereMesh_brmbs")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1779603801]
+shape = SubResource("SphereShape3D_brmbs")

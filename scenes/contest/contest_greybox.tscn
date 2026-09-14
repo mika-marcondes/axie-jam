@@ -1,24 +1,23 @@
 [gd_scene format=3 uid="uid://bhop0hyoha12f"]
 
+[ext_resource type="Shader" uid="uid://ddl7gqodm82t5" path="res://scenes/contest/contest_greybox.gdshader" id="1_ccxh4"]
+[ext_resource type="PackedScene" uid="uid://dveyac02bqln8" path="res://scenes/player/player.tscn" id="1_r5vmv"]
+[ext_resource type="PackedScene" uid="uid://diill28ak0gww" path="res://scenes/player/ball.tscn" id="2_ccxh4"]
+[ext_resource type="Script" uid="uid://br0hfpbv8lnf1" path="res://scripts/camera/camera_rig.gd" id="4_aps6a"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_brmbs"]
 size = Vector3(30, 0.2, 30)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dbjuf"]
-albedo_color = Color(0.19990295, 0.27517748, 0.4130985, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jxcsf"]
+render_priority = 0
+shader = ExtResource("1_ccxh4")
+shader_parameter/color_a = Color(0.15487581, 0.15487596, 0.15487641, 1)
+shader_parameter/color_b = Color(0.1, 0.1, 0.1, 1)
+shader_parameter/checker_scale = 8.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_dbjuf"]
-material = SubResource("StandardMaterial3D_dbjuf")
+material = SubResource("ShaderMaterial_jxcsf")
 size = Vector3(30, 0.2, 30)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_brmbs"]
-height = 1.5
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_brmbs"]
-height = 1.5
-
-[sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_brmbs"]
 
 [node name="ContestGreybox" type="Node3D" unique_id=1564593338]
 
@@ -33,23 +32,16 @@ mesh = SubResource("BoxMesh_dbjuf")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=372623840]
 transform = Transform3D(1, 0, 0, 0, -0.021672308, 0.99976516, 0, -0.99976516, -0.021672308, 0, 18.257147, 0)
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1367971218]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 6.0559206)
-
-[node name="PlayerRig" type="CharacterBody3D" parent="." unique_id=1734650220]
+[node name="Player" parent="." unique_id=1086016846 instance=ExtResource("1_r5vmv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1195245, -1.8688009)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerRig" unique_id=663183403]
-mesh = SubResource("CapsuleMesh_brmbs")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerRig" unique_id=1012639119]
-shape = SubResource("CapsuleShape3D_brmbs")
-
-[node name="Ball" type="Node3D" parent="." unique_id=2101237981]
+[node name="Ball" parent="." unique_id=1570341470 instance=ExtResource("2_ccxh4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4650292, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ball" unique_id=1391761997]
-mesh = SubResource("SphereMesh_brmbs")
+[node name="CameraRig" type="Node3D" parent="." unique_id=215474228 node_paths=PackedStringArray("target")]
+script = ExtResource("4_aps6a")
+target = NodePath("../Ball")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball" unique_id=1366373041]
-shape = SubResource("SphereShape3D_brmbs")
+[node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=1367971218]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5)
+current = true
