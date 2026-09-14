@@ -43,7 +43,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4650292, 0)
 script = ExtResource("4_aps6a")
 target = NodePath("../Ball")
 
-[node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=1367971218]
+[node name="YawPivot" type="Node3D" parent="CameraRig" unique_id=513869149]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig/YawPivot" unique_id=1367971218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5)
 current = true
 
