@@ -53,7 +53,7 @@ _data = {
 
 [node name="puffy" instance=ExtResource("1_7kae2")]
 
-[node name="Skeleton3D" parent="RootNode/JointBase_Grp" index="0"]
+[node name="Skeleton3D" parent="JointBase_Grp" index="0"]
 bones/1/rotation = Quaternion(0.145735, 0, 0, 0.989324)
 bones/2/rotation = Quaternion(-0.0310921, 0, 0, 0.999517)
 bones/4/rotation = Quaternion(0.27962, 0, 0, 0.960111)
@@ -145,32 +145,32 @@ bones/81/rotation = Quaternion(-0.377995, 0, 0, 0.925808)
 bones/82/rotation = Quaternion(0.923934, -0.0440443, -0.104551, 0.365343)
 bones/82/scale = Vector3(1, 1, 1)
 
-[node name="SM_Tail_M_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="0"]
+[node name="SM_Tail_M_1" parent="JointBase_Grp/Skeleton3D" index="0"]
 material_override = SubResource("StandardMaterial3D_18g55")
 
-[node name="SM_Back_M_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="1"]
+[node name="SM_Back_M_1" parent="JointBase_Grp/Skeleton3D" index="1"]
 material_override = SubResource("StandardMaterial3D_s88x4")
 
-[node name="SM_Ear_R_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="2"]
+[node name="SM_Ear_R_1" parent="JointBase_Grp/Skeleton3D" index="2"]
 material_override = SubResource("StandardMaterial3D_g26ne")
 
-[node name="SM_Ear_L_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="3"]
+[node name="SM_Ear_L_1" parent="JointBase_Grp/Skeleton3D" index="3"]
 material_override = SubResource("StandardMaterial3D_07vnx")
 
-[node name="SM_Horn_M_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="4"]
+[node name="SM_Horn_M_1" parent="JointBase_Grp/Skeleton3D" index="4"]
 material_override = SubResource("StandardMaterial3D_pi6cq")
 
-[node name="SM_Eye_M_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="5"]
+[node name="SM_Eye_M_1" parent="JointBase_Grp/Skeleton3D" index="5"]
 material_override = SubResource("StandardMaterial3D_ts8kl")
 
-[node name="SM_Mouth_1" parent="RootNode/JointBase_Grp/Skeleton3D" index="6"]
+[node name="SM_Mouth_1" parent="JointBase_Grp/Skeleton3D" index="6"]
 material_override = SubResource("StandardMaterial3D_7acyv")
 
-[node name="SM_Body" parent="RootNode/JointBase_Grp/Skeleton3D" index="7"]
+[node name="SM_Body" parent="JointBase_Grp/Skeleton3D" index="7"]
 material_override = SubResource("StandardMaterial3D_g8010")
 
 [node name="AnimationPlayer" parent="." index="1"]
-root_node = NodePath("../RootNode")
+root_node = NodePath("..")
 libraries = {
 "": SubResource("AnimationLibrary_lsmie"),
 "starter_puffy_cuttree": ExtResource("3_7lvbv"),
