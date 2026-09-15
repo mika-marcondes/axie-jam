@@ -38,6 +38,19 @@ var is_boosting: bool = false
 @onready var visual: Node3D = $Visual
 @onready var rider_anchor: Marker3D = $RiderAnchor
 
+@export_category("Ground Shadow")
+@export var shadow_max_height: float = 10.0
+@export var shadow_min_scale: float = 0.45
+@export var shadow_max_scale: float = 1.0
+@export var shadow_min_opacity: float = 0.12
+@export var shadow_max_opacity: float = 0.45
+@export var shadow_ground_offset: float = 0.02
+
+@onready var ground_probe: RayCast3D = $GroundProbe
+@onready var ground_shadow: MeshInstance3D = $GroundShadow
+
+var ground_shadow_material: ShaderMaterial
+
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
@@ -53,9 +66,59 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	handle_landing_bounce(was_on_floor, impact_velocity)
-
 	update_visual_rotation(delta)
+	update_ground_shadow()
 	check_fall_reset()
+
+
+func _ready() -> void:
+	ground_shadow.top_level = true
+	ground_shadow_material = ground_shadow.material_override as ShaderMaterial
+
+
+func update_ground_shadow() -> void:
+	ground_probe.force_raycast_update()
+
+	if not ground_probe.is_colliding():
+		ground_shadow.visible = false
+		return
+
+	ground_shadow.visible = true
+
+	var ground_position: Vector3 = ground_probe.get_collision_point()
+	var height: float = global_position.distance_to(ground_position)
+
+	ground_shadow.global_position = (
+		ground_position + Vector3.UP * shadow_ground_offset
+	)
+
+	var height_ratio: float = clampf(
+		height / shadow_max_height,
+		0.0,
+		1.0
+	)
+
+	var shadow_scale: float = lerpf(
+		shadow_max_scale,
+		shadow_min_scale,
+		height_ratio
+	)
+
+	var shadow_opacity: float = lerpf(
+		shadow_max_opacity,
+		shadow_min_opacity,
+		height_ratio
+	)
+
+	ground_shadow.scale = Vector3(
+		shadow_scale, 1.0, shadow_scale
+	)
+
+	if ground_shadow_material != null:
+		ground_shadow_material.set_shader_parameter(
+			"opacity",
+			shadow_opacity
+		)
 
 
 func handle_landing_bounce(
