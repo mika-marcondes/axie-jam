@@ -1,15 +1,20 @@
 [gd_scene format=3 uid="uid://dveyac02bqln8"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_brmbs"]
-height = 1.2
+[ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_8afob"]
+[ext_resource type="Script" uid="uid://dk61bis0ufe0d" path="res://scripts/player/player_controller.gd" id="1_dovo2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_brmbs"]
 height = 1.2
 
 [node name="Player" type="CharacterBody3D" unique_id=1086016846]
+script = ExtResource("1_dovo2")
 
-[node name="Visual" type="MeshInstance3D" parent="." unique_id=636936538]
-mesh = SubResource("CapsuleMesh_brmbs")
+[node name="VisualRoot" type="Node3D" parent="." unique_id=129650918]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Puffy" parent="VisualRoot" unique_id=1836076363 instance=ExtResource("1_8afob")]
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=1015696964]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6166462, 0)
 shape = SubResource("CapsuleShape3D_brmbs")
+disabled = true

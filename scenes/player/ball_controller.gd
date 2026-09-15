@@ -36,6 +36,7 @@ var is_boosting: bool = false
 @export var movement_reference: Node3D
 
 @onready var visual: Node3D = $Visual
+@onready var rider_anchor: Marker3D = $RiderAnchor
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 

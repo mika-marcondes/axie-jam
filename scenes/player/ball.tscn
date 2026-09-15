@@ -23,3 +23,6 @@ mesh = SubResource("SphereMesh_brmbs")
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=1779603801]
 shape = SubResource("SphereShape3D_brmbs")
+
+[node name="RiderAnchor" type="Marker3D" parent="." unique_id=446149211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
