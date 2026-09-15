@@ -28,6 +28,7 @@ size = Vector2(1.2, 1.2)
 
 [node name="Ball" type="CharacterBody3D" unique_id=1570341470]
 script = ExtResource("1_jxf6l")
+charged_jump_velocity = 14.0
 
 [node name="Visual" type="MeshInstance3D" parent="." unique_id=1375038441]
 mesh = SubResource("SphereMesh_brmbs")
@@ -39,6 +40,7 @@ shape = SubResource("SphereShape3D_brmbs")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="GroundProbe" type="RayCast3D" parent="." unique_id=199944996]
+visible = false
 target_position = Vector3(0, -20, 0)
 
 [node name="GroundShadow" type="MeshInstance3D" parent="." unique_id=653692038]
