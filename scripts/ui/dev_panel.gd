@@ -84,6 +84,16 @@ extends CanvasLayer
 @onready var landing_spin_deceleration_value: Label = %LandingSpinDecelerationValue
 @onready var landing_spin_deceleration_slider: HSlider = %LandingSpinDecelerationSlider
 
+const MODIFIED_COLOR: Color = Color("#F6C85F")
+
+const STATUS_READY_COLOR: Color = Color("#72E06A")
+const STATUS_ACTIVE_COLOR: Color = Color("#66C7FF")
+const STATUS_WARNING_COLOR: Color = Color("#FFD166")
+const STATUS_FULL_COLOR: Color = Color("#D996FF")
+const STATUS_INACTIVE_COLOR: Color = Color("#A0A0A0")
+
+var original_slider_values: Dictionary = {}
+var slider_labels: Dictionary = {}
 
 var ball: BallController
 
@@ -99,6 +109,8 @@ func _ready() -> void:
 
 	update_parameter_labels()
 	update_player_parameter_labels()
+
+	setup_parameter_cues()
 
 
 func _process(_delta: float) -> void:
@@ -372,13 +384,29 @@ func update_jump_debug() -> void:
 
 	if ball.is_charging_jump:
 		if charge_ratio >= 1.0:
-			jump_status_label.text = "Jump: FULL"
+			set_status(
+				jump_status_label,
+				"Jump: FULL",
+				STATUS_FULL_COLOR
+			)
 		else:
-			jump_status_label.text = "Jump: CHARGING"
+			set_status(
+				jump_status_label,
+				"Jump: CHARGING",
+				STATUS_WARNING_COLOR
+			)
 	elif ball.is_on_floor():
-		jump_status_label.text = "Jump: READY"
+		set_status(
+			jump_status_label,
+			"Jump: READY",
+			STATUS_READY_COLOR
+		)
 	else:
-		jump_status_label.text = "Jump: AIRBORNE"
+		set_status(
+			jump_status_label,
+			"Jump: AIRBORNE",
+			STATUS_ACTIVE_COLOR
+		)
 
 
 func update_bounce_debug() -> void:
@@ -386,11 +414,23 @@ func update_bounce_debug() -> void:
 		return
 
 	if ball.bounce_input_timer > 0.0:
-		bounce_status_label.text = "Bounce: BUFFERED (%.2f s)" % ball.bounce_input_timer
+		set_status(
+			bounce_status_label,
+			"Bounce: BUFFERED (%.2f s)" % ball.bounce_input_timer,
+			STATUS_WARNING_COLOR
+		)
 	elif ball.is_on_floor():
-		bounce_status_label.text = "Bounce: READY"
+		set_status(
+			bounce_status_label,
+			"Bounce: READY",
+			STATUS_READY_COLOR
+		)
 	else:
-		bounce_status_label.text = "Bounce: WAITING"
+		set_status(
+			bounce_status_label,
+			"Bounce: WAITING",
+			STATUS_INACTIVE_COLOR
+		)
 
 
 func update_boost_debug() -> void:
@@ -398,34 +438,217 @@ func update_boost_debug() -> void:
 		return
 
 	if ball.is_boosting:
-		boost_status_label.text = "Boost: ACTIVE"
+		set_status(
+			boost_status_label,
+			"Boost: ACTIVE",
+			STATUS_ACTIVE_COLOR
+		)
 	elif ball.is_on_floor():
-		boost_status_label.text = "Boost: READY"
+		set_status(
+			boost_status_label,
+			"Boost: READY",
+			STATUS_READY_COLOR
+		)
 	else:
-		boost_status_label.text = "Boost: AIRBORNE"
+		set_status(
+			boost_status_label,
+			"Boost: AIRBORNE",
+			STATUS_INACTIVE_COLOR
+		)
 
 
 func update_player_debug() -> void:
 	if player == null:
 		return
 
-	spin_rpm_label.text = "RPM: %.1f" % player.get_spin_rpm()
+	var rpm: float = player.get_spin_rpm()
+	var tuck_amount: float = player.get_tuck_amount()
+	var tuck_percent: int = roundi(tuck_amount * 100.0)
 
-	var tuck_percent: int = roundi(
-		player.get_tuck_amount() * 100.0
-	)
+	spin_rpm_label.text = "RPM: %.1f" % rpm
 	tuck_label.text = "Tuck: %d%%" % tuck_percent
 
-	airborne_label.text = (
-		"Airborne: YES"
-		if player.is_airborne()
-		else "Airborne: NO"
+	if absf(rpm) > 1.0:
+		spin_rpm_label.add_theme_color_override(
+			"font_color",
+			STATUS_ACTIVE_COLOR
+		)
+	else:
+		spin_rpm_label.remove_theme_color_override(
+			"font_color"
+		)
+
+	if tuck_amount >= 0.99:
+		tuck_label.add_theme_color_override(
+			"font_color",
+			STATUS_FULL_COLOR
+		)
+	elif tuck_amount > 0.01:
+		tuck_label.add_theme_color_override(
+			"font_color",
+			STATUS_WARNING_COLOR
+		)
+	else:
+		tuck_label.remove_theme_color_override(
+			"font_color"
+		)
+
+	if player.is_airborne():
+		set_status(
+			airborne_label,
+			"Airborne: YES",
+			STATUS_ACTIVE_COLOR
+		)
+	else:
+		set_status(
+			airborne_label,
+			"Airborne: NO",
+			STATUS_INACTIVE_COLOR
+		)
+
+	if player.is_diving():
+		set_status(
+			dive_status_label,
+			"Dive: ACTIVE",
+			STATUS_ACTIVE_COLOR
+		)
+	else:
+		set_status(
+			dive_status_label,
+			"Dive: OFF",
+			STATUS_INACTIVE_COLOR
+		)
+
+
+func register_parameter_cue(
+	slider: HSlider,
+	label: Label
+) -> void:
+	original_slider_values[slider] = slider.value
+	slider_labels[slider] = label
+
+	slider.value_changed.connect(
+		_on_parameter_cue_changed.bind(slider)
 	)
 
-	dive_status_label.text = (
-		"Dive: ACTIVE"
-		if player.is_diving()
-		else "Dive: OFF"
+
+func _on_parameter_cue_changed(
+	_value: float,
+	slider: HSlider
+) -> void:
+	update_parameter_cue(slider)
+
+
+func update_parameter_cue(slider: HSlider) -> void:
+	if not original_slider_values.has(slider):
+		return
+
+	var label: Label = slider_labels.get(slider) as Label
+	var original_value: float = float(original_slider_values[slider])
+
+	if label == null:
+		return
+
+	if is_equal_approx(slider.value, original_value):
+		label.remove_theme_color_override("font_color")
+	else:
+		label.add_theme_color_override(
+			"font_color",
+			MODIFIED_COLOR
+		)
+
+
+func setup_parameter_cues() -> void:
+	# Movement
+	register_parameter_cue(acceleration_slider, acceleration_value)
+	register_parameter_cue(max_speed_slider, max_speed_value)
+	register_parameter_cue(steering_slider, steering_value)
+	register_parameter_cue(drag_slider, drag_value)
+
+	# Jump
+	register_parameter_cue(jump_velocity_slider, jump_velocity_value)
+	register_parameter_cue(air_control_slider, air_control_value)
+	register_parameter_cue(
+		charged_jump_velocity_slider,
+		charged_jump_velocity_value
+	)
+	register_parameter_cue(
+		max_charge_time_slider,
+		max_charge_time_value
+	)
+
+	# Bounce
+	register_parameter_cue(
+		bounce_retention_slider,
+		bounce_retention_value
+	)
+	register_parameter_cue(
+		bounce_input_window_slider,
+		bounce_input_window_value
+	)
+
+	# Boost
+	register_parameter_cue(
+		boost_acceleration_multiplier_slider,
+		boost_acceleration_multiplier_value
+	)
+	register_parameter_cue(
+		boost_max_speed_multiplier_slider,
+		boost_max_speed_multiplier_value
+	)
+	register_parameter_cue(
+		boost_release_deceleration_slider,
+		boost_release_deceleration_value
+	)
+
+	# Tricks
+	register_parameter_cue(
+		spin_acceleration_slider,
+		spin_acceleration_value
+	)
+	register_parameter_cue(
+		max_spin_speed_slider,
+		max_spin_speed_value
+	)
+	register_parameter_cue(
+		spin_drag_slider,
+		spin_drag_value
+	)
+	register_parameter_cue(
+		tuck_spin_multiplier_slider,
+		tuck_spin_multiplier_value
+	)
+	register_parameter_cue(
+		tuck_transition_speed_slider,
+		tuck_transition_speed_value
+	)
+	register_parameter_cue(
+		dive_angle_slider,
+		dive_angle_value
+	)
+	register_parameter_cue(
+		dive_speed_slider,
+		dive_speed_value
+	)
+	register_parameter_cue(
+		landing_realign_speed_slider,
+		landing_realign_speed_value
+	)
+	register_parameter_cue(
+		landing_spin_deceleration_slider,
+		landing_spin_deceleration_value
+	)
+
+
+func set_status(
+	label: Label,
+	text: String,
+	color: Color
+) -> void:
+	label.text = text
+	label.add_theme_color_override(
+		"font_color",
+		color
 	)
 
 
