@@ -57,6 +57,33 @@ extends CanvasLayer
 @onready var airborne_label: Label = %AirborneLabel
 @onready var dive_status_label: Label = %DiveStatusLabel
 
+@onready var spin_acceleration_value: Label = %SpinAccelerationValue
+@onready var spin_acceleration_slider: HSlider = %SpinAccelerationSlider
+
+@onready var max_spin_speed_value: Label = %MaxSpinSpeedValue
+@onready var max_spin_speed_slider: HSlider = %MaxSpinSpeedSlider
+
+@onready var spin_drag_value: Label = %SpinDragValue
+@onready var spin_drag_slider: HSlider = %SpinDragSlider
+
+@onready var tuck_spin_multiplier_value: Label = %TuckSpinMultiplierValue
+@onready var tuck_spin_multiplier_slider: HSlider = %TuckSpinMultiplierSlider
+
+@onready var tuck_transition_speed_value: Label = %TuckTransitionSpeedValue
+@onready var tuck_transition_speed_slider: HSlider = %TuckTransitionSpeedSlider
+
+@onready var dive_angle_value: Label = %DiveAngleValue
+@onready var dive_angle_slider: HSlider = %DiveAngleSlider
+
+@onready var dive_speed_value: Label = %DiveSpeedValue
+@onready var dive_speed_slider: HSlider = %DiveSpeedSlider
+
+@onready var landing_realign_speed_value: Label = %LandingRealignSpeedValue
+@onready var landing_realign_speed_slider: HSlider = %LandingRealignSpeedSlider
+
+@onready var landing_spin_deceleration_value: Label = %LandingSpinDecelerationValue
+@onready var landing_spin_deceleration_slider: HSlider = %LandingSpinDecelerationSlider
+
 
 var ball: BallController
 
@@ -65,8 +92,13 @@ func _ready() -> void:
 	ball = get_node(ball_path) as BallController
 
 	setup_sliders()
+	setup_trick_sliders()
+
 	sync_sliders_from_ball()
+	sync_sliders_from_player()
+
 	update_parameter_labels()
+	update_player_parameter_labels()
 
 
 func _process(_delta: float) -> void:
@@ -162,6 +194,121 @@ func setup_sliders() -> void:
 	)
 	boost_release_deceleration_slider.value_changed.connect(
 		_on_boost_release_deceleration_changed
+	)
+
+
+func setup_trick_sliders() -> void:
+	spin_acceleration_slider.min_value = 0.0
+	spin_acceleration_slider.max_value = 2000.0
+	spin_acceleration_slider.step = 10.0
+
+	max_spin_speed_slider.min_value = 90.0
+	max_spin_speed_slider.max_value = 1440.0
+	max_spin_speed_slider.step = 10.0
+
+	spin_drag_slider.min_value = 0.0
+	spin_drag_slider.max_value = 720.0
+	spin_drag_slider.step = 10.0
+
+	tuck_spin_multiplier_slider.min_value = 1.0
+	tuck_spin_multiplier_slider.max_value = 3.0
+	tuck_spin_multiplier_slider.step = 0.05
+
+	tuck_transition_speed_slider.min_value = 0.5
+	tuck_transition_speed_slider.max_value = 20.0
+	tuck_transition_speed_slider.step = 0.25
+
+	dive_angle_slider.min_value = 0.0
+	dive_angle_slider.max_value = 180.0
+	dive_angle_slider.step = 5.0
+
+	dive_speed_slider.min_value = 0.5
+	dive_speed_slider.max_value = 20.0
+	dive_speed_slider.step = 0.25
+
+	landing_realign_speed_slider.min_value = 0.5
+	landing_realign_speed_slider.max_value = 20.0
+	landing_realign_speed_slider.step = 0.25
+
+	landing_spin_deceleration_slider.min_value = 0.0
+	landing_spin_deceleration_slider.max_value = 3000.0
+	landing_spin_deceleration_slider.step = 25.0
+
+	spin_acceleration_slider.value_changed.connect(
+		_on_spin_acceleration_changed
+	)
+	max_spin_speed_slider.value_changed.connect(
+		_on_max_spin_speed_changed
+	)
+	spin_drag_slider.value_changed.connect(
+		_on_spin_drag_changed
+	)
+	tuck_spin_multiplier_slider.value_changed.connect(
+		_on_tuck_spin_multiplier_changed
+	)
+	tuck_transition_speed_slider.value_changed.connect(
+		_on_tuck_transition_speed_changed
+	)
+	dive_angle_slider.value_changed.connect(
+		_on_dive_angle_changed
+	)
+	dive_speed_slider.value_changed.connect(
+		_on_dive_speed_changed
+	)
+	landing_realign_speed_slider.value_changed.connect(
+		_on_landing_realign_speed_changed
+	)
+	landing_spin_deceleration_slider.value_changed.connect(
+		_on_landing_spin_deceleration_changed
+	)
+
+
+func sync_sliders_from_player() -> void:
+	if player == null:
+		return
+
+	spin_acceleration_slider.value = player.spin_acceleration
+	max_spin_speed_slider.value = player.max_spin_speed
+	spin_drag_slider.value = player.spin_drag
+	tuck_spin_multiplier_slider.value = player.tuck_spin_multiplier
+	tuck_transition_speed_slider.value = player.tuck_transition_speed
+	dive_angle_slider.value = player.dive_angle
+	dive_speed_slider.value = player.dive_speed
+	landing_realign_speed_slider.value = player.landing_realign_speed
+	landing_spin_deceleration_slider.value = player.landing_spin_deceleration
+
+
+func update_player_parameter_labels() -> void:
+	if player == null:
+		return
+
+	spin_acceleration_value.text = (
+		"Spin Acceleration: %.0f°/s²" % player.spin_acceleration
+	)
+	max_spin_speed_value.text = (
+		"Max Spin Speed: %.0f°/s" % player.max_spin_speed
+	)
+	spin_drag_value.text = (
+		"Spin Drag: %.0f°/s²" % player.spin_drag
+	)
+	tuck_spin_multiplier_value.text = (
+		"Tuck Spin Mult.: %.2fx" % player.tuck_spin_multiplier
+	)
+	tuck_transition_speed_value.text = (
+		"Tuck Transition Speed: %.2f" % player.tuck_transition_speed
+	)
+	dive_angle_value.text = (
+		"Dive Angle: %.0f°" % player.dive_angle
+	)
+	dive_speed_value.text = (
+		"Dive Speed: %.2f" % player.dive_speed
+	)
+	landing_realign_speed_value.text = (
+		"Landing Re-align Speed: %.2f" % player.landing_realign_speed
+	)
+	landing_spin_deceleration_value.text = (
+		"Landing Spin Deceleration: %.0f°/s²"
+		% player.landing_spin_deceleration
 	)
 
 
@@ -345,3 +492,48 @@ func _on_boost_max_speed_multiplier_changed(value: float) -> void:
 func _on_boost_release_deceleration_changed(value: float) -> void:
 	ball.boost_release_deceleration = value
 	update_parameter_labels()
+
+
+func _on_spin_acceleration_changed(value: float) -> void:
+	player.spin_acceleration = value
+	update_player_parameter_labels()
+
+
+func _on_max_spin_speed_changed(value: float) -> void:
+	player.max_spin_speed = value
+	update_player_parameter_labels()
+
+
+func _on_spin_drag_changed(value: float) -> void:
+	player.spin_drag = value
+	update_player_parameter_labels()
+
+
+func _on_tuck_spin_multiplier_changed(value: float) -> void:
+	player.tuck_spin_multiplier = value
+	update_player_parameter_labels()
+
+
+func _on_tuck_transition_speed_changed(value: float) -> void:
+	player.tuck_transition_speed = value
+	update_player_parameter_labels()
+
+
+func _on_dive_angle_changed(value: float) -> void:
+	player.dive_angle = value
+	update_player_parameter_labels()
+
+
+func _on_dive_speed_changed(value: float) -> void:
+	player.dive_speed = value
+	update_player_parameter_labels()
+
+
+func _on_landing_realign_speed_changed(value: float) -> void:
+	player.landing_realign_speed = value
+	update_player_parameter_labels()
+
+
+func _on_landing_spin_deceleration_changed(value: float) -> void:
+	player.landing_spin_deceleration = value
+	update_player_parameter_labels()
