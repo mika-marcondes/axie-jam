@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 @export var ball_path: NodePath
+@export var player: PlayerController
 
 @onready var panel: Control = %PanelContainer
 
@@ -51,6 +52,12 @@ extends CanvasLayer
 @onready var boost_release_deceleration_value: Label = %BoostReleaseDecelerationValue
 @onready var boost_release_deceleration_slider: HSlider = %BoostReleaseDecelerationSlider
 
+@onready var spin_rpm_label: Label = %SpinRPMLabel
+@onready var tuck_label: Label = %TuckLabel
+@onready var airborne_label: Label = %AirborneLabel
+@onready var dive_status_label: Label = %DiveStatusLabel
+
+
 var ball: BallController
 
 
@@ -75,6 +82,7 @@ func _process(_delta: float) -> void:
 	update_jump_debug()
 	update_bounce_debug()
 	update_boost_debug()
+	update_player_debug()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -248,6 +256,30 @@ func update_boost_debug() -> void:
 		boost_status_label.text = "Boost: READY"
 	else:
 		boost_status_label.text = "Boost: AIRBORNE"
+
+
+func update_player_debug() -> void:
+	if player == null:
+		return
+
+	spin_rpm_label.text = "RPM: %.1f" % player.get_spin_rpm()
+
+	var tuck_percent: int = roundi(
+		player.get_tuck_amount() * 100.0
+	)
+	tuck_label.text = "Tuck: %d%%" % tuck_percent
+
+	airborne_label.text = (
+		"Airborne: YES"
+		if player.is_airborne()
+		else "Airborne: NO"
+	)
+
+	dive_status_label.text = (
+		"Dive: ACTIVE"
+		if player.is_diving()
+		else "Dive: OFF"
+	)
 
 
 func _on_acceleration_changed(value: float) -> void:

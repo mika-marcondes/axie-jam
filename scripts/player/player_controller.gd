@@ -1,4 +1,5 @@
 extends Node3D
+class_name PlayerController
 
 @export_category("References")
 @export var ball: BallController
@@ -173,3 +174,15 @@ func realign_tricks(delta: float) -> void:
 
 func get_spin_rpm() -> float:
 	return air_spin_velocity / 6.0
+
+
+func get_tuck_amount() -> float:
+	return tuck_amount
+
+
+func is_airborne() -> bool:
+	return ball != null and not ball.is_on_floor()
+
+
+func is_diving() -> bool:
+	return absf(air_pitch_angle) > 0.05
