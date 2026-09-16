@@ -2,52 +2,54 @@ extends CanvasLayer
 
 @export var ball_path: NodePath
 
-@onready var panel: Control = $PanelContainer
-@onready var speed_label: Label = $PanelContainer/MarginContainer/VBoxContainer/SpeedLabel
+@onready var panel: Control = %PanelContainer
 
-@onready var acceleration_value: Label = $PanelContainer/MarginContainer/VBoxContainer/AccelerationValue
-@onready var acceleration_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/AccelerationSlider
+@onready var speed_label: Label = %SpeedLabel
 
-@onready var max_speed_value: Label = $PanelContainer/MarginContainer/VBoxContainer/MaxSpeedValue
-@onready var max_speed_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/MaxSpeedSlider
+@onready var acceleration_value: Label = %AccelerationValue
+@onready var acceleration_slider: HSlider = %AccelerationSlider
 
-@onready var steering_value: Label = $PanelContainer/MarginContainer/VBoxContainer/SteeringValue
-@onready var steering_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/SteeringSlider
+@onready var max_speed_value: Label = %MaxSpeedValue
+@onready var max_speed_slider: HSlider = %MaxSpeedSlider
 
-@onready var drag_value: Label = $PanelContainer/MarginContainer/VBoxContainer/DragValue
-@onready var drag_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/DragSlider
+@onready var steering_value: Label = %SteeringValue
+@onready var steering_slider: HSlider = %SteeringSlider
 
-@onready var jump_velocity_value: Label = $PanelContainer/MarginContainer/VBoxContainer/JumpVelocityValue
-@onready var jump_velocity_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/JumpVelocitySlider
+@onready var drag_value: Label = %DragValue
+@onready var drag_slider: HSlider = %DragSlider
 
-@onready var air_control_value: Label = $PanelContainer/MarginContainer/VBoxContainer/AirControlValue
-@onready var air_control_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/AirControlSlider
+@onready var jump_velocity_value: Label = %JumpVelocityValue
+@onready var jump_velocity_slider: HSlider = %JumpVelocitySlider
 
-@onready var charged_jump_velocity_value: Label = $PanelContainer/MarginContainer/VBoxContainer/ChargedJumpVelocityValue
-@onready var charged_jump_velocity_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/ChargedJumpVelocitySlider
+@onready var air_control_value: Label = %AirControlValue
+@onready var air_control_slider: HSlider = %AirControlSlider
 
-@onready var max_charge_time_value: Label = $PanelContainer/MarginContainer/VBoxContainer/MaxChargeTimeValue
-@onready var max_charge_time_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/MaxChargeTimeSlider
+@onready var charged_jump_velocity_value: Label = %ChargedJumpVelocityValue
+@onready var charged_jump_velocity_slider: HSlider = %ChargedJumpVelocitySlider
 
-@onready var jump_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/JumpStatusLabel
-@onready var jump_charge_bar: ProgressBar = $PanelContainer/MarginContainer/VBoxContainer/JumpChargeBar
+@onready var max_charge_time_value: Label = %MaxChargeTimeValue
+@onready var max_charge_time_slider: HSlider = %MaxChargeTimeSlider
 
-@onready var bounce_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceStatusLabel
-@onready var bounce_retention_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceRetentionValue
-@onready var bounce_retention_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BounceRetentionSlider
-@onready var bounce_input_window_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BounceInputWindowValue
-@onready var bounce_input_window_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BounceInputWindowSlider
+@onready var jump_status_label: Label = %JumpStatusLabel
+@onready var jump_charge_bar: ProgressBar = %JumpChargeBar
 
-@onready var boost_status_label: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostStatusLabel
+@onready var bounce_status_label: Label = %BounceStatusLabel
+@onready var bounce_retention_value: Label = %BounceRetentionValue
+@onready var bounce_retention_slider: HSlider = %BounceRetentionSlider
 
-@onready var boost_acceleration_multiplier_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostAccelerationMultiplierValue
-@onready var boost_acceleration_multiplier_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BoostAccelerationMultiplierSlider
+@onready var bounce_input_window_value: Label = %BounceInputWindowValue
+@onready var bounce_input_window_slider: HSlider = %BounceInputWindowSlider
 
-@onready var boost_max_speed_multiplier_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostMaxSpeedMultiplierValue
-@onready var boost_max_speed_multiplier_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BoostMaxSpeedMultiplierSlider
+@onready var boost_status_label: Label = %BoostStatusLabel
 
-@onready var boost_release_deceleration_value: Label = $PanelContainer/MarginContainer/VBoxContainer/BoostReleaseDecelerationValue
-@onready var boost_release_deceleration_slider: HSlider = $PanelContainer/MarginContainer/VBoxContainer/BoostReleaseDecelerationSlider
+@onready var boost_acceleration_multiplier_value: Label = %BoostAccelerationMultiplierValue
+@onready var boost_acceleration_multiplier_slider: HSlider = %BoostAccelerationMultiplierSlider
+
+@onready var boost_max_speed_multiplier_value: Label = %BoostMaxSpeedMultiplierValue
+@onready var boost_max_speed_multiplier_slider: HSlider = %BoostMaxSpeedMultiplierSlider
+
+@onready var boost_release_deceleration_value: Label = %BoostReleaseDecelerationValue
+@onready var boost_release_deceleration_slider: HSlider = %BoostReleaseDecelerationSlider
 
 var ball: BallController
 

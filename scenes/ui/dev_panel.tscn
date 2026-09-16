@@ -6,11 +6,12 @@
 script = ExtResource("1_mrjit")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=507723578]
+unique_name_in_owner = true
 self_modulate = Color(0.5, 0.5, 0.5, 0.64705884)
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 336.0
-offset_bottom = 16.0
+offset_right = 436.0
+offset_bottom = 576.0
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1089912199]
 layout_mode = 2
@@ -19,134 +20,360 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=304131301]
+[node name="MainVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=304131301]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="Title" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=487640015]
+[node name="Title" type="Label" parent="PanelContainer/MarginContainer/MainVBox" unique_id=487640015]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.06666667, 0.827451, 0, 1)
-text = "DEV MODE"
+theme_override_constants/line_spacing = 10
+text = "DEV MENU"
 
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=133646664]
+[node name="HeaderSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/MainVBox" unique_id=133646664]
 modulate = Color(0.06666667, 0.827451, 0, 1)
 layout_mode = 2
 
-[node name="SpeedLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1231532894]
+[node name="DebugReadouts" type="VBoxContainer" parent="PanelContainer/MarginContainer/MainVBox" unique_id=472695745]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=1231532894]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Speed"
 
-[node name="AccelerationValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=688424877]
+[node name="SpinRPMLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=394070328]
+unique_name_in_owner = true
+layout_mode = 2
+text = "RPM"
+
+[node name="TuckLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=1252569581]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tuck"
+
+[node name="AirborneLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=41699265]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Airbone"
+
+[node name="DiveStatusLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=480955345]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Dive"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/MainVBox" unique_id=1736171825]
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="PanelContainer/MarginContainer/MainVBox" unique_id=1444490799]
+custom_minimum_size = Vector2(320, 350)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/side_margin = 0
+current_tab = 0
+
+[node name="Movement" type="ScrollContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer" unique_id=797351991]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement" unique_id=1566045954]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer" unique_id=1972350114]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AccelerationValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=688424877]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Aceleration"
 
-[node name="AccelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=906112083]
+[node name="AccelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=906112083]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MaxSpeedValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1348946204]
+[node name="MaxSpeedValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=1348946204]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Max Speed"
 
-[node name="MaxSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=629630724]
+[node name="MaxSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=629630724]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SteeringValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1816971821]
+[node name="SteeringValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=1816971821]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Steering"
 
-[node name="SteeringSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1552976203]
+[node name="SteeringSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=1552976203]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DragValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=422573180]
+[node name="DragValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=422573180]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Drag"
 
-[node name="DragSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=668699578]
+[node name="DragSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Movement/MarginContainer/Content" unique_id=668699578]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1314410339]
+[node name="Jump" type="ScrollContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer" unique_id=1637024391]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump" unique_id=1199489790]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer" unique_id=611421813]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="JumpChargeBar" type="ProgressBar" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=124955278]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="JumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=2124454754]
-layout_mode = 2
-text = "Jump Velocity"
-
-[node name="JumpVelocitySlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1131569550]
-layout_mode = 2
-
-[node name="AirControlValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1082714415]
-layout_mode = 2
-text = "Air Control"
-
-[node name="AirControlSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1646643526]
-layout_mode = 2
-
-[node name="ChargedJumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1294541028]
-layout_mode = 2
-text = "Charged Jump Velocity"
-
-[node name="ChargedJumpVelocitySlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1585915522]
-layout_mode = 2
-
-[node name="MaxChargeTimeValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1382074735]
-layout_mode = 2
-text = "Max Charge Time"
-
-[node name="MaxChargeTimeSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1041899629]
-layout_mode = 2
-
-[node name="JumpStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1087846202]
+[node name="JumpStatusLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1087846202]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Jump Status"
 
-[node name="JumpChargeBar" type="ProgressBar" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=124955278]
+[node name="JumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=2124454754]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Jump Velocity"
+
+[node name="JumpVelocitySlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1131569550]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator3" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=455096786]
+[node name="ChargedJumpVelocityValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1294541028]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Charged Jump Velocity"
+
+[node name="ChargedJumpVelocitySlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1585915522]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BounceStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1758656371]
+[node name="MaxChargeTimeValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1382074735]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Max Charge Time"
+
+[node name="MaxChargeTimeSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1041899629]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AirControlValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1082714415]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Air Control"
+
+[node name="AirControlSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Jump/MarginContainer/Content" unique_id=1646643526]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Bounce" type="ScrollContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer" unique_id=1712115097]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce" unique_id=1306557590]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce/MarginContainer" unique_id=1029020165]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BounceStatusLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce/MarginContainer/Content" unique_id=1758656371]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Bounce Status"
 
-[node name="BounceRetentionValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=656562463]
+[node name="BounceRetentionValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce/MarginContainer/Content" unique_id=656562463]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Bounce Retention"
 
-[node name="BounceRetentionSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1963066247]
+[node name="BounceRetentionSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce/MarginContainer/Content" unique_id=1963066247]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BounceInputWindowValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=682910045]
+[node name="BounceInputWindowValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce/MarginContainer/Content" unique_id=682910045]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Bounce Input Window"
 
-[node name="BounceInputWindowSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1427369711]
+[node name="BounceInputWindowSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Bounce/MarginContainer/Content" unique_id=1427369711]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator4" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1059290861]
+[node name="Boost" type="ScrollContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer" unique_id=1964285340]
+visible = false
 layout_mode = 2
+metadata/_tab_index = 3
 
-[node name="BoostStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=153576105]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost" unique_id=1220036649]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer" unique_id=290986933]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BoostStatusLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=153576105]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Boost Status"
 
-[node name="BoostAccelerationMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1158591011]
+[node name="BoostAccelerationMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=1158591011]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Boost Acceleration Mult."
 
-[node name="BoostAccelerationMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1366732974]
+[node name="BoostAccelerationMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=1366732974]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BoostMaxSpeedMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=710449533]
+[node name="BoostMaxSpeedMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=710449533]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Boost Max Speed Mult."
 
-[node name="BoostMaxSpeedMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1391930641]
+[node name="BoostMaxSpeedMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=1391930641]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BoostReleaseDecelerationValue" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1093313497]
+[node name="BoostReleaseDecelerationValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=1093313497]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Boost Release Deceleration"
 
-[node name="BoostReleaseDecelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=232355063]
+[node name="BoostReleaseDecelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Boost/MarginContainer/Content" unique_id=232355063]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Tricks" type="ScrollContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer" unique_id=1735355437]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks" unique_id=29161189]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer" unique_id=669319410]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TrickStatusLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1150700653]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Trick Status"
+
+[node name="SpinAccelerationValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=595656319]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Spin Acceleration"
+
+[node name="SpinAccelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=2032593920]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MaxSpinSpeedValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1232844662]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Max Spin Speed"
+
+[node name="MaxSpinSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=984027292]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SpinDragValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1967253075]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Spin Drag"
+
+[node name="SpinDragSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=920073380]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TuckSpinMultiplierValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=840458007]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tuck Spin Mult."
+
+[node name="TuckSpinMultiplierSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1406163796]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TuckTransitionSpeedValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=250108647]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tuck Transition Speed"
+
+[node name="TuckTransitionSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1116445251]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DiveAngleValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=82192734]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Dive Angle"
+
+[node name="DiveAngleSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1350771996]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DiveSpeedValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=901521058]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Dive Speed"
+
+[node name="DiveSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=1704120239]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LandingRealignSpeedValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=2098102255]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Landing Re-align Speed"
+
+[node name="LandingRealignSpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=625545926]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LandingSpinDecelerationValue" type="Label" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=338703755]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Landing Spin Deceleration"
+
+[node name="LandingSpinDecelerationSlider" type="HSlider" parent="PanelContainer/MarginContainer/MainVBox/TabContainer/Tricks/MarginContainer/Content" unique_id=3638139]
+unique_name_in_owner = true
 layout_mode = 2
