@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://c1b08joeg3760"]
+
+[node name="GameHud" type="CanvasLayer" unique_id=168603079]
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=4433029]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 47.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+
+[node name="TopRow" type="HBoxContainer" parent="MarginContainer" unique_id=58207754]
+layout_mode = 2
+
+[node name="AppealLabel" type="Label" parent="MarginContainer/TopRow" unique_id=894774551]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Appeal"
+
+[node name="Spacer" type="Control" parent="MarginContainer/TopRow" unique_id=1960292532]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ComboLabel" type="Label" parent="MarginContainer/TopRow" unique_id=310626965]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Combo"
+
+[node name="EventCenter" type="CenterContainer" parent="." unique_id=235040045]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 1908.0
+offset_bottom = 35.0
+
+[node name="EventFeed" type="VBoxContainer" parent="EventCenter" unique_id=1985522715]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BottomLeft" type="MarginContainer" parent="." unique_id=1559825942]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 1896.0
+grow_vertical = 0
+
+[node name="SpeedLabel" type="Label" parent="BottomLeft" unique_id=792741126]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Speed"
+
+[node name="BottomRight" type="MarginContainer" parent="." unique_id=309793690]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1896.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="RPMLabel" type="Label" parent="BottomRight" unique_id=449807877]
+unique_name_in_owner = true
+layout_mode = 2
+text = "RPM"
+horizontal_alignment = 2

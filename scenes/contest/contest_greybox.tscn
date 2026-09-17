@@ -1,10 +1,13 @@
 [gd_scene format=3 uid="uid://bhop0hyoha12f"]
 
+[ext_resource type="Script" uid="uid://bntgxgh8oqw3q" path="res://scripts/contest/performance_controller.gd" id="1_3ppnf"]
 [ext_resource type="Shader" uid="uid://ddl7gqodm82t5" path="res://scenes/contest/contest_greybox.gdshader" id="1_ccxh4"]
 [ext_resource type="PackedScene" uid="uid://dveyac02bqln8" path="res://scenes/player/player.tscn" id="1_r5vmv"]
 [ext_resource type="PackedScene" uid="uid://diill28ak0gww" path="res://scenes/player/ball.tscn" id="2_ccxh4"]
 [ext_resource type="Script" uid="uid://br0hfpbv8lnf1" path="res://scripts/camera/camera_rig.gd" id="4_aps6a"]
 [ext_resource type="PackedScene" uid="uid://bfrpeh1opo6n5" path="res://scenes/ui/dev_panel.tscn" id="5_dc481"]
+[ext_resource type="PackedScene" uid="uid://c1b08joeg3760" path="res://scenes/ui/game_hud.tscn" id="7_svnmd"]
+[ext_resource type="Script" uid="uid://dmy68q5dp3wup" path="res://scripts/ui/game_hud.gd" id="8_60nno"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_brmbs"]
 size = Vector3(200, 0.2, 200)
@@ -20,7 +23,10 @@ shader_parameter/checker_scale = 20.0
 material = SubResource("ShaderMaterial_jxcsf")
 size = Vector3(200, 0.2, 200)
 
-[node name="ContestGreybox" type="Node3D" unique_id=1564593338]
+[node name="ContestGreybox" type="Node3D" unique_id=1564593338 node_paths=PackedStringArray("ball", "player")]
+script = ExtResource("1_3ppnf")
+ball = NodePath("Ball")
+player = NodePath("Player")
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=27720150]
 
@@ -34,11 +40,11 @@ mesh = SubResource("BoxMesh_dbjuf")
 transform = Transform3D(1, 0, 0, 0, -0.021672308, 0.99976516, 0, -0.99976516, -0.021672308, 0, 18.257147, 0)
 
 [node name="Player" parent="." unique_id=1086016846 node_paths=PackedStringArray("ball") instance=ExtResource("1_r5vmv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1195245, -1.8688009)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 ball = NodePath("../Ball")
 
 [node name="Ball" parent="." unique_id=1570341470 node_paths=PackedStringArray("movement_reference") instance=ExtResource("2_ccxh4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4650292, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 movement_reference = NodePath("../CameraRig/YawPivot")
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=215474228 node_paths=PackedStringArray("target")]
@@ -52,5 +58,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 5)
 current = true
 
 [node name="DevUI" parent="." unique_id=1027784577 node_paths=PackedStringArray("player") instance=ExtResource("5_dc481")]
+visible = false
 ball_path = NodePath("../Ball")
 player = NodePath("../Player")
+
+[node name="GameHud" parent="." unique_id=168603079 node_paths=PackedStringArray("ball", "player", "performance") instance=ExtResource("7_svnmd")]
+script = ExtResource("8_60nno")
+ball = NodePath("../Ball")
+player = NodePath("../Player")
+performance = NodePath("..")

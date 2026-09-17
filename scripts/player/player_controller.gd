@@ -205,6 +205,10 @@ func get_tuck_amount() -> float:
 	return tuck_amount
 
 
+func get_spin_velocity() -> float:
+	return air_spin_velocity
+
+
 func is_airborne() -> bool:
 	return ball != null and not ball.is_on_floor()
 
