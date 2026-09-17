@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://diill28ak0gww"]
 
-[ext_resource type="Script" uid="uid://cpndixow04ijj" path="res://scenes/player/ball_controller.gd" id="1_jxf6l"]
+[ext_resource type="Script" uid="uid://cpndixow04ijj" path="res://scripts/player/ball_controller.gd" id="1_jxf6l"]
 [ext_resource type="Shader" uid="uid://ce5wwmpkopvmh" path="res://scenes/player/ball.gdshader" id="2_jxcsf"]
 [ext_resource type="Shader" uid="uid://detpkt7evo5bu" path="res://scenes/player/ball_shadow.gdshader" id="3_8x03u"]
 
@@ -26,6 +26,15 @@ shader_parameter/opacity = 0.50000002375
 material = SubResource("ShaderMaterial_dbjuf")
 size = Vector2(1.2, 1.2)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8x03u"]
+render_priority = 0
+shader = ExtResource("3_8x03u")
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/opacity = 0.45
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dbjuf"]
+material = SubResource("ShaderMaterial_8x03u")
+
 [node name="Ball" type="CharacterBody3D" unique_id=1570341470]
 script = ExtResource("1_jxf6l")
 charged_jump_velocity = 14.0
@@ -45,3 +54,8 @@ target_position = Vector3(0, -20, 0)
 
 [node name="GroundShadow" type="MeshInstance3D" parent="." unique_id=653692038]
 mesh = SubResource("PlaneMesh_brmbs")
+
+[node name="RiderShadow" type="Node3D" parent="." unique_id=1462485099]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RiderShadow" unique_id=259958210]
+mesh = SubResource("PlaneMesh_dbjuf")

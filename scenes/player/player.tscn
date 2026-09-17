@@ -19,18 +19,20 @@ height = 1.2
 [node name="Player" type="CharacterBody3D" unique_id=1086016846]
 script = ExtResource("1_dovo2")
 
-[node name="TrickPivot" type="Node3D" parent="." unique_id=1365349899]
+[node name="AirOffsetRoot" type="Node3D" parent="." unique_id=83156629]
+
+[node name="TrickPivot" type="Node3D" parent="AirOffsetRoot" unique_id=1365349899]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="TuckAura" type="MeshInstance3D" parent="TrickPivot" unique_id=82554208]
+[node name="TuckAura" type="MeshInstance3D" parent="AirOffsetRoot/TrickPivot" unique_id=82554208]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0.06868899, -0.08769214)
 material_override = SubResource("ShaderMaterial_0owmy")
 mesh = SubResource("SphereMesh_gmlin")
 
-[node name="VisualRoot" type="Node3D" parent="TrickPivot" unique_id=129650918]
+[node name="VisualRoot" type="Node3D" parent="AirOffsetRoot/TrickPivot" unique_id=129650918]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.5, 0)
 
-[node name="Puffy" parent="TrickPivot/VisualRoot" unique_id=1836076363 instance=ExtResource("1_8afob")]
+[node name="Puffy" parent="AirOffsetRoot/TrickPivot/VisualRoot" unique_id=1836076363 instance=ExtResource("1_8afob")]
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=1015696964]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6166462, 0)

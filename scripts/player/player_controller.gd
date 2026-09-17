@@ -3,6 +3,7 @@ class_name PlayerController
 
 @export_category("References")
 @export var ball: BallController
+@export var movement_reference: Node3D
 
 @export_category("Movement")
 @export var rotation_speed: float = 10.0
@@ -20,11 +21,24 @@ class_name PlayerController
 @export var tuck_spin_multiplier: float = 1.8
 @export var tuck_transition_speed: float = 8.0
 
-@onready var trick_pivot: Node3D = $TrickPivot
-@onready var tuck_aura: MeshInstance3D = $TrickPivot/TuckAura
+@export_category("Air Positioning")
+@export var air_offset_speed: float = 2.5
+@export var air_offset_return_speed: float = 1.5
+@export var max_horizontal_air_offset: float = 1.0
+@export var dive_separation: float = 0.9
+@export var dive_separation_speed: float = 3.5
+
+var air_offset: Vector3 = Vector3.ZERO
+
+@onready var air_offset_root: Node3D = $AirOffsetRoot
+@onready var trick_pivot: Node3D = $AirOffsetRoot/TrickPivot
+@onready var tuck_aura: MeshInstance3D = $AirOffsetRoot/TrickPivot/TuckAura
 
 @export_category("Debug Tracking")
 @export var jump_height_threshold: float = 0.05
+
+
+
 
 var current_jump_height: float = 0.0
 var last_jump_height: float = 0.0
@@ -93,6 +107,7 @@ func handle_air_tricks(delta: float) -> void:
 	update_tuck(delta)
 	update_air_spin(delta)
 	update_dive(delta)
+	update_air_offset(delta)
 	apply_trick_rotation()
 
 
@@ -200,12 +215,75 @@ func update_jump_tracking() -> void:
 	was_airborne = airborne
 
 
+func update_air_offset(delta: float) -> void:
+	var input_direction: Vector3 = get_air_movement_direction()
+
+	if input_direction.length_squared() > 0.01:
+		var local_direction: Vector3 = (
+			global_transform.basis.inverse()
+			* input_direction
+		)
+
+		local_direction.y = 0.0
+		local_direction = local_direction.normalized()
+
+		air_offset.x += local_direction.x * air_offset_speed * delta
+		air_offset.z += local_direction.z * air_offset_speed * delta
+	else:
+		air_offset.x = move_toward(
+			air_offset.x,
+			0.0,
+			air_offset_return_speed * delta
+		)
+		air_offset.z = move_toward(
+			air_offset.z,
+			0.0,
+			air_offset_return_speed * delta
+		)
+
+	var horizontal_offset: Vector2 = Vector2(
+		air_offset.x,
+		air_offset.z
+	)
+
+	if horizontal_offset.length() > max_horizontal_air_offset:
+		horizontal_offset = (
+			horizontal_offset.normalized()
+			* max_horizontal_air_offset
+		)
+
+		air_offset.x = horizontal_offset.x
+		air_offset.z = horizontal_offset.y
+
+	var target_vertical_offset: float = 0.0
+
+	if Input.is_action_pressed("trick_dive"):
+		target_vertical_offset = dive_separation
+
+	air_offset.y = move_toward(
+		air_offset.y,
+		target_vertical_offset,
+		dive_separation_speed * delta
+	)
+
+	air_offset_root.position = air_offset
+
+
 func apply_trick_rotation() -> void:
 	trick_pivot.rotation = Vector3(
 		air_pitch_angle,
 		air_spin_angle,
 		0.0
 	)
+
+
+func recover_air_offset(delta: float) -> void:
+	air_offset = air_offset.move_toward(
+		Vector3.ZERO,
+		air_offset_return_speed * delta
+	)
+
+	air_offset_root.position = air_offset
 
 
 func realign_tricks(delta: float) -> void:
@@ -238,6 +316,8 @@ func realign_tricks(delta: float) -> void:
 		0.0,
 		tuck_transition_speed * delta
 	)
+
+	recover_air_offset(delta)
 
 	air_spin_velocity = air_spin_momentum
 	apply_trick_rotation()
@@ -282,3 +362,36 @@ func get_catch_distance() -> float:
 	return global_position.distance_to(
 		ball.rider_anchor.global_position
 	)
+	
+
+func get_air_movement_direction() -> Vector3:
+	if movement_reference == null:
+		return Vector3.ZERO
+
+	var input: Vector2 = Input.get_vector(
+		"move_left",
+		"move_right",
+		"move_forward",
+		"move_back"
+	)
+
+	if input.length_squared() < 0.01:
+		return Vector3.ZERO
+
+	var camera_forward: Vector3 = (
+		-movement_reference.global_transform.basis.z
+	)
+	var camera_right: Vector3 = (
+		movement_reference.global_transform.basis.x
+	)
+
+	camera_forward.y = 0.0
+	camera_right.y = 0.0
+
+	camera_forward = camera_forward.normalized()
+	camera_right = camera_right.normalized()
+
+	return (
+		camera_right * input.x
+		+ camera_forward * -input.y
+	).normalized()
