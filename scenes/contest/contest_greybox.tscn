@@ -59,8 +59,8 @@ target = NodePath("../Ball")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 5)
 current = true
 
-[node name="DevUI" parent="." unique_id=1027784577 node_paths=PackedStringArray("player") instance=ExtResource("5_dc481")]
-ball_path = NodePath("../Ball")
+[node name="DevUI" parent="." unique_id=1027784577 node_paths=PackedStringArray("ball", "player") instance=ExtResource("5_dc481")]
+ball = NodePath("../Ball")
 player = NodePath("../Player")
 
 [node name="GameHud" parent="." unique_id=168603079 node_paths=PackedStringArray("ball", "player", "performance") instance=ExtResource("7_svnmd")]

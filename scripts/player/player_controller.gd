@@ -26,8 +26,6 @@ class_name PlayerController
 @export_category("Debug Tracking")
 @export var jump_height_threshold: float = 0.05
 
-@onready var air_offset_root: Node3D = $AirOffsetRoot
-
 var current_jump_height: float = 0.0
 var last_jump_height: float = 0.0
 var best_jump_height: float = 0.0
@@ -278,4 +276,9 @@ func is_diving() -> bool:
 
 
 func get_catch_distance() -> float:
-	return air_offset_root.position.length()
+	if ball == null:
+		return 0.0
+
+	return global_position.distance_to(
+		ball.rider_anchor.global_position
+	)
