@@ -8,6 +8,7 @@ signal event_scored(event_name: String, points: int)
 @export_category("References")
 @export var ball: BallController
 @export var player: PlayerController
+@export var scoring: ScoringConfig
 
 var total_appeal: int = 0
 var combo_points: int = 0
@@ -21,6 +22,10 @@ var spin_progress_degrees: float = 0.0
 
 
 func _ready() -> void:
+	if scoring == null:
+		push_error("PerformanceController requires a ScoringConfig.")
+		return
+
 	if ball != null:
 		was_on_floor = ball.is_on_floor()
 
@@ -79,17 +84,29 @@ func end_air() -> void:
 
 
 func score_air_height(height: float) -> void:
-	if height < 0.4:
+	if height < scoring.minimum_air_height:
 		return
 
-	if height < 1.0:
-		score_event("Small Air %.1fm" % height, 5)
-	elif height < 2.0:
-		score_event("Air %.1fm" % height, 25)
-	elif height < 3.5:
-		score_event("Big Air %.1fm" % height, 60)
+	if height < scoring.small_air_height:
+		score_event(
+			"Small Air %.1fm" % height,
+			scoring.small_air_points
+		)
+	elif height < scoring.medium_air_height:
+		score_event(
+			"Air %.1fm" % height,
+			scoring.medium_air_points
+		)
+	elif height < scoring.big_air_height:
+		score_event(
+			"Big Air %.1fm" % height,
+			scoring.big_air_points
+		)
 	else:
-		score_event("Huge Air %.1fm" % height, 100)
+		score_event(
+			"Huge Air %.1fm" % height,
+			scoring.huge_air_points
+		)
 
 
 func score_event(event_name: String, points: int) -> void:
@@ -107,3 +124,15 @@ func reset_combo() -> void:
 	combo_chain = 0
 
 	combo_changed.emit(combo_points, combo_chain)
+
+
+func get_combo_multiplier() -> float:
+	var multiplier: float = (
+		1.0
+		+ maxf(combo_chain - 1, 0) * scoring.combo_multiplier_step
+	)
+
+	return minf(
+		multiplier,
+		scoring.max_combo_multiplier
+	)

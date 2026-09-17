@@ -84,6 +84,12 @@ extends CanvasLayer
 @onready var landing_spin_deceleration_value: Label = %LandingSpinDecelerationValue
 @onready var landing_spin_deceleration_slider: HSlider = %LandingSpinDecelerationSlider
 
+@onready var current_jump_height_label: Label = %CurrentJumpHeightLabel
+@onready var last_jump_height_label: Label = %LastJumpHeightLabel
+@onready var best_jump_height_label: Label = %BestJumpHeightLabel
+
+@onready var catch_distance_label: Label = %CatchDistanceLabel
+
 const MODIFIED_COLOR: Color = Color("#F6C85F")
 
 const STATUS_READY_COLOR: Color = Color("#72E06A")
@@ -467,6 +473,21 @@ func update_player_debug() -> void:
 
 	spin_rpm_label.text = "RPM: %.1f" % rpm
 	tuck_label.text = "Tuck: %d%%" % tuck_percent
+	
+	current_jump_height_label.text = (
+		"Current Height: %.2f m"
+		% player.get_current_jump_height()
+	)
+
+	last_jump_height_label.text = (
+		"Last Jump: %.2f m"
+		% player.get_last_jump_height()
+	)
+
+	best_jump_height_label.text = (
+		"Best Jump: %.2f m"
+		% player.get_best_jump_height()
+	)
 
 	if absf(rpm) > 1.0:
 		spin_rpm_label.add_theme_color_override(

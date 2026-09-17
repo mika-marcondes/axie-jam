@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bntgxgh8oqw3q" path="res://scripts/contest/performance_controller.gd" id="1_3ppnf"]
 [ext_resource type="Shader" uid="uid://ddl7gqodm82t5" path="res://scenes/contest/contest_greybox.gdshader" id="1_ccxh4"]
 [ext_resource type="PackedScene" uid="uid://dveyac02bqln8" path="res://scenes/player/player.tscn" id="1_r5vmv"]
+[ext_resource type="Resource" uid="uid://dcpfnx2spfqbf" path="res://data/scoring/default_scoring_config.tres" id="2_60nno"]
 [ext_resource type="PackedScene" uid="uid://diill28ak0gww" path="res://scenes/player/ball.tscn" id="2_ccxh4"]
 [ext_resource type="Script" uid="uid://br0hfpbv8lnf1" path="res://scripts/camera/camera_rig.gd" id="4_aps6a"]
 [ext_resource type="PackedScene" uid="uid://bfrpeh1opo6n5" path="res://scenes/ui/dev_panel.tscn" id="5_dc481"]
@@ -27,6 +28,7 @@ size = Vector3(200, 0.2, 200)
 script = ExtResource("1_3ppnf")
 ball = NodePath("Ball")
 player = NodePath("Player")
+scoring = ExtResource("2_60nno")
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=27720150]
 
@@ -58,7 +60,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 5)
 current = true
 
 [node name="DevUI" parent="." unique_id=1027784577 node_paths=PackedStringArray("player") instance=ExtResource("5_dc481")]
-visible = false
 ball_path = NodePath("../Ball")
 player = NodePath("../Player")
 

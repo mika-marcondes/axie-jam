@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cpndixow04ijj" path="res://scenes/player/ball_controller.gd" id="1_jxf6l"]
 [ext_resource type="Shader" uid="uid://ce5wwmpkopvmh" path="res://scenes/player/ball.gdshader" id="2_jxcsf"]
-[ext_resource type="Shader" uid="uid://detpkt7evo5bu" path="res://scenes/player/ball_shadow.gdshader" id="3_8x03u"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r5vmv"]
 render_priority = 0
@@ -17,10 +16,6 @@ material = SubResource("ShaderMaterial_r5vmv")
 [sub_resource type="SphereShape3D" id="SphereShape3D_brmbs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dbjuf"]
-render_priority = 0
-shader = ExtResource("3_8x03u")
-shader_parameter/shadow_color = Color(0, 0, 0, 1)
-shader_parameter/opacity = 0.50000002375
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_brmbs"]
 material = SubResource("ShaderMaterial_dbjuf")

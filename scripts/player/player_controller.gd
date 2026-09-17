@@ -23,6 +23,19 @@ class_name PlayerController
 @onready var trick_pivot: Node3D = $TrickPivot
 @onready var tuck_aura: MeshInstance3D = $TrickPivot/TuckAura
 
+@export_category("Debug Tracking")
+@export var jump_height_threshold: float = 0.05
+
+@onready var air_offset_root: Node3D = $AirOffsetRoot
+
+var current_jump_height: float = 0.0
+var last_jump_height: float = 0.0
+var best_jump_height: float = 0.0
+
+var jump_start_y: float = 0.0
+var jump_peak_y: float = 0.0
+var was_airborne: bool = false
+
 var tuck_aura_material: ShaderMaterial
 
 var air_spin_angle: float = 0.0
@@ -45,6 +58,7 @@ func _physics_process(delta: float) -> void:
 		handle_air_tricks(delta)
 
 	update_tuck_visuals()
+	update_jump_tracking()
 
 
 func _ready() -> void:
@@ -154,6 +168,40 @@ func update_dive(delta: float) -> void:
 	)
 
 
+func update_jump_tracking() -> void:
+	var airborne: bool = not ball.is_on_floor()
+	var current_y: float = trick_pivot.global_position.y
+
+	if airborne and not was_airborne:
+		jump_start_y = current_y
+		jump_peak_y = current_y
+		current_jump_height = 0.0
+
+	if airborne:
+		jump_peak_y = maxf(jump_peak_y, current_y)
+
+		current_jump_height = maxf(
+			current_y - jump_start_y,
+			0.0
+		)
+
+	if not airborne and was_airborne:
+		last_jump_height = maxf(
+			jump_peak_y - jump_start_y,
+			0.0
+		)
+
+		if last_jump_height >= jump_height_threshold:
+			best_jump_height = maxf(
+				best_jump_height,
+				last_jump_height
+			)
+
+		current_jump_height = 0.0
+
+	was_airborne = airborne
+
+
 func apply_trick_rotation() -> void:
 	trick_pivot.rotation = Vector3(
 		air_pitch_angle,
@@ -209,9 +257,25 @@ func get_spin_velocity() -> float:
 	return air_spin_velocity
 
 
+func get_current_jump_height() -> float:
+	return current_jump_height
+
+
+func get_last_jump_height() -> float:
+	return last_jump_height
+
+
+func get_best_jump_height() -> float:
+	return best_jump_height
+
+
 func is_airborne() -> bool:
 	return ball != null and not ball.is_on_floor()
 
 
 func is_diving() -> bool:
 	return absf(air_pitch_angle) > 0.05
+
+
+func get_catch_distance() -> float:
+	return air_offset_root.position.length()

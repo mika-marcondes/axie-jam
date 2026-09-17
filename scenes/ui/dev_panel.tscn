@@ -62,6 +62,26 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Dive"
 
+[node name="CurrentJumpHeightLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=855177945]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Current Height"
+
+[node name="LastJumpHeightLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=1498727208]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Last Jump Height"
+
+[node name="BestJumpHeightLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=325683058]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Best Jump Height"
+
+[node name="CatchDistanceLabel" type="Label" parent="PanelContainer/MarginContainer/MainVBox/DebugReadouts" unique_id=2090141706]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Catch Distance"
+
 [node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/MainVBox" unique_id=1736171825]
 layout_mode = 2
 
