@@ -2,6 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_8afob"]
 [ext_resource type="Script" uid="uid://dk61bis0ufe0d" path="res://scripts/player/player_controller.gd" id="1_dovo2"]
+[ext_resource type="Shader" uid="uid://bpri5bjevl3ac" path="res://scenes/player/tuck_aura.gdshader" id="2_gmlin"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0owmy"]
+render_priority = 0
+shader = ExtResource("2_gmlin")
+shader_parameter/aura_color = Color(0.39999998, 0.83000004, 1, 0.15686275)
+shader_parameter/tuck_amount = 0.0
+shader_parameter/fresnel_power = 2.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_gmlin"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_brmbs"]
 height = 1.2
@@ -11,6 +21,11 @@ script = ExtResource("1_dovo2")
 
 [node name="TrickPivot" type="Node3D" parent="." unique_id=1365349899]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="TuckAura" type="MeshInstance3D" parent="TrickPivot" unique_id=82554208]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0.06868899, -0.08769214)
+material_override = SubResource("ShaderMaterial_0owmy")
+mesh = SubResource("SphereMesh_gmlin")
 
 [node name="VisualRoot" type="Node3D" parent="TrickPivot" unique_id=129650918]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.5, 0)

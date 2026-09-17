@@ -21,6 +21,9 @@ class_name PlayerController
 @export var tuck_transition_speed: float = 8.0
 
 @onready var trick_pivot: Node3D = $TrickPivot
+@onready var tuck_aura: MeshInstance3D = $TrickPivot/TuckAura
+
+var tuck_aura_material: ShaderMaterial
 
 var air_spin_angle: float = 0.0
 var air_spin_momentum: float = 0.0
@@ -40,6 +43,16 @@ func _physics_process(delta: float) -> void:
 		realign_tricks(delta)
 	else:
 		handle_air_tricks(delta)
+
+	update_tuck_visuals()
+
+
+func _ready() -> void:
+	if tuck_aura.material_override is ShaderMaterial:
+		tuck_aura_material = tuck_aura.material_override.duplicate() as ShaderMaterial
+		tuck_aura.material_override = tuck_aura_material
+
+	tuck_aura.visible = false
 
 
 func follow_ball() -> void:
@@ -81,6 +94,18 @@ func update_tuck(delta: float) -> void:
 		tuck_amount,
 		target_tuck,
 		tuck_transition_speed * delta
+	)
+
+
+func update_tuck_visuals() -> void:
+	if tuck_aura_material == null:
+		return
+
+	tuck_aura.visible = tuck_amount > 0.01
+
+	tuck_aura_material.set_shader_parameter(
+		"tuck_amount",
+		tuck_amount
 	)
 
 
