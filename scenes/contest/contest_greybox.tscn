@@ -50,8 +50,12 @@ air_offset_return_speed = 2.5
 max_horizontal_air_offset = 0.2
 dive_separation = 0.2
 
-[node name="Ball" parent="." unique_id=1570341470 node_paths=PackedStringArray("movement_reference") instance=ExtResource("2_ccxh4")]
+[node name="Ball" parent="." unique_id=1570341470 node_paths=PackedStringArray("rider_shadow_target", "movement_reference") instance=ExtResource("2_ccxh4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+rider_shadow_target = NodePath("../Player")
+rider_shadow_min_scale = 0.1
+rider_shadow_min_opacity = 22.1
+rider_shadow_max_opacity = 0.5
 movement_reference = NodePath("../CameraRig/YawPivot")
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=215474228 node_paths=PackedStringArray("target")]

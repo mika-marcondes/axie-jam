@@ -347,6 +347,10 @@ func get_best_jump_height() -> float:
 	return best_jump_height
 
 
+func get_rider_shadow_position() -> Vector3:
+	return air_offset_root.global_position
+
+
 func is_airborne() -> bool:
 	return ball != null and not ball.is_on_floor()
 
