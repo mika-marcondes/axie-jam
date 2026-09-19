@@ -13,6 +13,7 @@ class_name PlayerController
 @export var air_lean_angle: float = 12.0
 @export var air_lean_speed: float = 8.0
 @export var air_lean_min_speed: float = 0.05
+@export var landing_lean_recovery_speed: float = 12.0
 
 var previous_air_offset: Vector3 = Vector3.ZERO
 var air_offset_velocity: Vector3 = Vector3.ZERO
@@ -360,8 +361,13 @@ func update_air_motion_visuals(delta: float) -> void:
 				* intensity
 			)
 
+	var current_lean_speed: float = air_lean_speed
+	
+	if ball.is_on_floor():
+		current_lean_speed = landing_lean_recovery_speed
+
 	var weight: float = clampf(
-		air_lean_speed * delta,
+		current_lean_speed * delta,
 		0.0,
 		1.0
 	)
