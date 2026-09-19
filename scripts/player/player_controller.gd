@@ -7,6 +7,15 @@ class_name PlayerController
 
 @export_category("Movement")
 @export var rotation_speed: float = 10.0
+@export var air_rotation_speed: float = 3.0
+
+@export_category("Air Feel")
+@export var air_lean_angle: float = 12.0
+@export var air_lean_speed: float = 8.0
+@export var air_lean_min_speed: float = 0.05
+
+var previous_air_offset: Vector3 = Vector3.ZERO
+var air_offset_velocity: Vector3 = Vector3.ZERO
 
 @export_category("Air Tricks")
 @export var spin_acceleration: float = 720.0
@@ -72,13 +81,14 @@ func _physics_process(delta: float) -> void:
 		return
 
 	follow_ball()
+	update_facing(delta)
 
 	if ball.is_on_floor():
-		update_facing(delta)
 		realign_tricks(delta)
 	else:
 		handle_air_tricks(delta)
-
+	
+	update_air_motion_visuals(delta)
 	update_tuck_visuals()
 	update_jump_tracking()
 	update_visual_contact(delta)
@@ -111,12 +121,20 @@ func update_facing(delta: float) -> void:
 		return
 
 	var direction: Vector3 = horizontal_velocity.normalized()
-	var target_yaw: float = atan2(-direction.x, -direction.z)
+	var target_yaw: float = atan2(
+		-direction.x,
+		-direction.z
+	)
+
+	var current_rotation_speed: float = rotation_speed
+
+	if not ball.is_on_floor():
+		current_rotation_speed = air_rotation_speed
 
 	rotation.y = lerp_angle(
 		rotation.y,
 		target_yaw,
-		clampf(rotation_speed * delta, 0.0, 1.0)
+		clampf(current_rotation_speed * delta, 0.0, 1.0)
 	)
 
 
@@ -296,6 +314,68 @@ func update_visual_contact(delta: float) -> void:
 		contact_root.position.y,
 		target_offset,
 		contact_offset_speed * delta
+	)
+
+
+func update_air_motion_visuals(delta: float) -> void:
+	var current_offset: Vector3 = air_offset_root.position
+
+	air_offset_velocity = (
+		current_offset - previous_air_offset
+	) / maxf(delta, 0.001)
+
+	previous_air_offset = current_offset
+
+	var target_pitch: float = 0.0
+	var target_roll: float = 0.0
+
+	if not ball.is_on_floor():
+		var horizontal_velocity: Vector2 = Vector2(
+			air_offset_velocity.x,
+			air_offset_velocity.z
+		)
+
+		if horizontal_velocity.length() > air_lean_min_speed:
+			var direction: Vector2 = horizontal_velocity.normalized()
+			var intensity: float = clampf(
+				horizontal_velocity.length()
+				/ maxf(air_offset_speed, 0.001),
+				0.0,
+				1.0
+			)
+
+			var lean_angle: float = deg_to_rad(
+				air_lean_angle
+			)
+
+			target_pitch = (
+				direction.y
+				* lean_angle
+				* intensity
+			)
+
+			target_roll = (
+				-direction.x
+				* lean_angle
+				* intensity
+			)
+
+	var weight: float = clampf(
+		air_lean_speed * delta,
+		0.0,
+		1.0
+	)
+
+	contact_root.rotation.x = lerp_angle(
+		contact_root.rotation.x,
+		target_pitch,
+		weight
+	)
+
+	contact_root.rotation.z = lerp_angle(
+		contact_root.rotation.z,
+		target_roll,
+		weight
 	)
 
 
