@@ -30,10 +30,11 @@ size = Vector2(1.2, 1.2)
 render_priority = 0
 shader = ExtResource("3_8x03u")
 shader_parameter/shadow_color = Color(0, 0, 0, 1)
-shader_parameter/opacity = 0.45
+shader_parameter/opacity = 0.8830000419425
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_dbjuf"]
 material = SubResource("ShaderMaterial_8x03u")
+size = Vector2(1, 1)
 
 [node name="Ball" type="CharacterBody3D" unique_id=1570341470]
 script = ExtResource("1_jxf6l")

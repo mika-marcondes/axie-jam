@@ -37,7 +37,17 @@ var air_offset: Vector3 = Vector3.ZERO
 @export_category("Debug Tracking")
 @export var jump_height_threshold: float = 0.05
 
+@onready var axie_animator: AxieAnimationController = (
+	$AirOffsetRoot/TrickPivot/ContactRoot/VisualRoot/Puffy/Animator
+)
 
+@export_category("Visual Contact")
+@export var grounded_contact_offset: float = 0.03
+@export var contact_offset_speed: float = 6.0
+
+@onready var contact_root: Node3D = (
+	$AirOffsetRoot/TrickPivot/ContactRoot
+)
 
 
 var current_jump_height: float = 0.0
@@ -71,14 +81,21 @@ func _physics_process(delta: float) -> void:
 
 	update_tuck_visuals()
 	update_jump_tracking()
+	update_visual_contact(delta)
 
 
 func _ready() -> void:
 	if tuck_aura.material_override is ShaderMaterial:
-		tuck_aura_material = tuck_aura.material_override.duplicate() as ShaderMaterial
+		tuck_aura_material = (
+			tuck_aura.material_override.duplicate()
+			as ShaderMaterial
+		)
 		tuck_aura.material_override = tuck_aura_material
 
 	tuck_aura.visible = false
+
+	if axie_animator != null:
+		axie_animator.setup(self, ball)
 
 
 func follow_ball() -> void:
@@ -267,6 +284,19 @@ func update_air_offset(delta: float) -> void:
 	)
 
 	air_offset_root.position = air_offset
+
+
+func update_visual_contact(delta: float) -> void:
+	var target_offset: float = 0.0
+
+	if ball.is_on_floor():
+		target_offset = grounded_contact_offset
+
+	contact_root.position.y = move_toward(
+		contact_root.position.y,
+		target_offset,
+		contact_offset_speed * delta
+	)
 
 
 func apply_trick_rotation() -> void:
