@@ -7,7 +7,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0owmy"]
 render_priority = 0
 shader = ExtResource("2_gmlin")
-shader_parameter/aura_color = Color(0.39999998, 0.83000004, 1, 0.15686275)
+shader_parameter/aura_color = Color(0.39999998, 0.83000004, 1, 0)
 shader_parameter/tuck_amount = 0.0
 shader_parameter/fresnel_power = 2.5
 

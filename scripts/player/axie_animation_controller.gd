@@ -73,3 +73,8 @@ func update_grounded_animation(delta: float) -> void:
 func update_airborne_animation() -> void:
 	if playback.get_current_node() != "Airborne":
 		playback.travel("Airborne")
+	
+	animation_tree.set(
+			"parameters/Airborne/AirLoop/TuckBlend/blend_amount",
+			player.get_tuck_amount()
+		)
