@@ -47,10 +47,13 @@ ball = NodePath("../Ball")
 movement_reference = NodePath("../CameraRig/YawPivot")
 rotation_speed = 3.0
 air_rotation_speed = 1.5
+dive_angle = 60.0
+dive_speed = 3.0
 air_offset_speed = 1.0
 air_offset_return_speed = 1.0
 max_horizontal_air_offset = 0.1
-dive_separation = 0.6
+dive_separation = 0.2
+dive_separation_speed = 1.0
 
 [node name="Ball" parent="." unique_id=1570341470 node_paths=PackedStringArray("rider_shadow_target", "movement_reference") instance=ExtResource("2_ccxh4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
