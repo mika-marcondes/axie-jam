@@ -5,16 +5,22 @@ signal appeal_changed(value: int)
 signal combo_changed(points: int, chain: int)
 signal event_scored(event_name: String, points: int)
 
+signal combo_banked(points: int, multiplier: float)
+signal combo_continued(chain: int)
+
 @export_category("References")
 @export var ball: BallController
 @export var player: PlayerController
 @export var scoring: ScoringConfig
 
 var total_appeal: int = 0
+
 var combo_points: int = 0
 var combo_chain: int = 0
+var combo_event_count: int = 0
 
 var was_on_floor: bool = true
+var pending_bounce: bool = false
 
 var takeoff_y: float = 0.0
 var max_air_y: float = 0.0
@@ -26,12 +32,18 @@ func _ready() -> void:
 		push_error("PerformanceController requires a ScoringConfig.")
 		return
 
-	if ball != null:
-		was_on_floor = ball.is_on_floor()
+	if ball == null:
+		push_error("PerformanceController requires a BallController.")
+		return
+
+	was_on_floor = ball.is_on_floor()
+
+	if not ball.bounced.is_connected(_on_ball_bounced):
+		ball.bounced.connect(_on_ball_bounced)
 
 
 func _physics_process(delta: float) -> void:
-	if ball == null or player == null:
+	if ball == null or player == null or scoring == null:
 		return
 
 	var is_on_floor: bool = ball.is_on_floor()
@@ -48,6 +60,8 @@ func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor
 
 
+#region Air Tracking
+
 func begin_air() -> void:
 	takeoff_y = ball.global_position.y
 	max_air_y = takeoff_y
@@ -60,10 +74,13 @@ func update_air(delta: float) -> void:
 		ball.global_position.y
 	)
 
-	spin_progress_degrees += player.get_spin_velocity() * delta
+	spin_progress_degrees += (
+		player.get_spin_velocity()
+		* delta
+	)
 
 	while absf(spin_progress_degrees) >= 360.0:
-		score_event("360 Spin", 50)
+		score_spin()
 
 		var rotation_sign: float = (
 			1.0
@@ -71,7 +88,10 @@ func update_air(delta: float) -> void:
 			else -1.0
 		)
 
-		spin_progress_degrees -= 360.0 * rotation_sign
+		spin_progress_degrees -= (
+			360.0
+			* rotation_sign
+		)
 
 
 func end_air() -> void:
@@ -81,6 +101,29 @@ func end_air() -> void:
 	)
 
 	score_air_height(jump_height)
+
+	if pending_bounce:
+		continue_combo()
+	else:
+		bank_combo()
+
+	pending_bounce = false
+
+#endregion
+
+
+#region Scoring
+
+func score_spin() -> void:
+	var points: int = roundi(
+		scoring.spin_base_points
+		* scoring.spin_rotation_multiplier
+	)
+
+	score_event(
+		"360 Spin",
+		points
+	)
 
 
 func score_air_height(height: float) -> void:
@@ -109,30 +152,99 @@ func score_air_height(height: float) -> void:
 		)
 
 
-func score_event(event_name: String, points: int) -> void:
-	total_appeal += points
-	combo_points += points
-	combo_chain += 1
+func score_event(
+	event_name: String,
+	points: int
+) -> void:
+	if combo_chain <= 0:
+		combo_chain = 1
 
-	event_scored.emit(event_name, points)
+	combo_points += points
+	combo_event_count += 1
+
+	event_scored.emit(
+		event_name,
+		points
+	)
+
+	combo_changed.emit(
+		combo_points,
+		combo_chain
+	)
+
+
+func continue_combo() -> void:
+	if combo_chain <= 0:
+		combo_chain = 1
+	else:
+		combo_chain += 1
+
+	score_event(
+		"Bounce",
+		scoring.bounce_points
+	)
+
+	combo_continued.emit(combo_chain)
+
+
+func bank_combo() -> void:
+	if combo_points <= 0:
+		reset_combo()
+		return
+
+	var multiplier: float = get_combo_multiplier()
+	var banked_points: int = roundi(
+		combo_points
+		* multiplier
+	)
+
+	total_appeal += banked_points
+
+	combo_banked.emit(
+		banked_points,
+		multiplier
+	)
+
 	appeal_changed.emit(total_appeal)
-	combo_changed.emit(combo_points, combo_chain)
+
+	reset_combo()
 
 
 func reset_combo() -> void:
 	combo_points = 0
 	combo_chain = 0
+	combo_event_count = 0
 
-	combo_changed.emit(combo_points, combo_chain)
+	combo_changed.emit(
+		combo_points,
+		combo_chain
+	)
 
 
 func get_combo_multiplier() -> float:
+	if combo_chain <= 1:
+		return 1.0
+
 	var multiplier: float = (
 		1.0
-		+ maxf(combo_chain - 1, 0) * scoring.combo_multiplier_step
+		+ float(combo_chain - 1)
+		* scoring.combo_multiplier_step
 	)
 
 	return minf(
 		multiplier,
 		scoring.max_combo_multiplier
 	)
+
+#endregion
+
+
+#region Ball Events
+
+func _on_ball_bounced(
+	_impact_speed: float,
+	_bounce_velocity: float
+) -> void:
+	pending_bounce = true
+
+#endregion

@@ -19,6 +19,12 @@ func _ready() -> void:
 	performance.appeal_changed.connect(_on_appeal_changed)
 	performance.combo_changed.connect(_on_combo_changed)
 	performance.event_scored.connect(_on_event_scored)
+	performance.combo_banked.connect(
+		_on_combo_banked
+	)
+	performance.combo_continued.connect(
+		_on_combo_continued
+	)
 
 	update_score_labels()
 
@@ -45,7 +51,14 @@ func update_score_labels() -> void:
 	if performance == null:
 		return
 
-	appeal_label.text = "APPEAL  %d" % performance.total_appeal
+	appeal_label.text = (
+		"APPEAL  %d"
+		% performance.total_appeal
+	)
+
+	if performance.combo_points <= 0:
+		combo_label.text = "COMBO  —"
+		return
 
 	combo_label.text = "COMBO  %d  x%d" % [
 		performance.combo_points,
@@ -53,21 +66,37 @@ func update_score_labels() -> void:
 	]
 
 
-func show_event(event_name: String, points: int) -> void:
+func show_event(
+	event_name: String,
+	points: int
+) -> void:
+	show_message(
+		"%s  +%d" % [
+			event_name,
+			points
+		]
+	)
+
+
+func show_message(text: String) -> void:
 	var label: Label = Label.new()
 
-	label.text = "%s  +%d" % [
-		event_name,
-		points
-	]
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 22)
+	label.text = text
+	label.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+
+	label.add_theme_font_size_override(
+		"font_size",
+		22
+	)
 
 	event_feed.add_child(label)
 
 	var tween: Tween = create_tween()
 
 	tween.tween_interval(0.8)
+
 	tween.tween_property(
 		label,
 		"modulate:a",
@@ -75,7 +104,9 @@ func show_event(event_name: String, points: int) -> void:
 		0.5
 	)
 
-	tween.tween_callback(label.queue_free)
+	tween.tween_callback(
+		label.queue_free
+	)
 
 
 func _on_appeal_changed(_value: int) -> void:
@@ -94,3 +125,22 @@ func _on_event_scored(
 	points: int
 ) -> void:
 	show_event(event_name, points)
+
+
+func _on_combo_banked(
+	points: int,
+	multiplier: float
+) -> void:
+	show_message(
+		"BANKED  +%d  x%.2f" % [
+			points,
+			multiplier
+		]
+	)
+
+
+func _on_combo_continued(chain: int) -> void:
+	show_message(
+		"BOUNCE!  CHAIN x%d"
+		% chain
+	)
