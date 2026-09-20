@@ -8,23 +8,37 @@ anchor_right = 1.0
 offset_bottom = 47.0
 grow_horizontal = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
 
-[node name="TopRow" type="HBoxContainer" parent="MarginContainer" unique_id=58207754]
-layout_mode = 2
-
-[node name="AppealLabel" type="Label" parent="MarginContainer/TopRow" unique_id=894774551]
+[node name="AppealLabel" type="Label" parent="MarginContainer" unique_id=894774551]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Appeal"
 
-[node name="Spacer" type="Control" parent="MarginContainer/TopRow" unique_id=1960292532]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1787641378]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = -4
 
-[node name="ComboLabel" type="Label" parent="MarginContainer/TopRow" unique_id=310626965]
+[node name="ComboLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=567344560]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 28
 text = "Combo"
+horizontal_alignment = 1
+
+[node name="TrickLineLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1249707650]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 24
+text = "Trick"
+horizontal_alignment = 1
 
 [node name="EventCenter" type="CenterContainer" parent="." unique_id=235040045]
 offset_left = 12.0

@@ -5,12 +5,29 @@ extends CanvasLayer
 @export var player: PlayerController
 @export var performance: PerformanceController
 
+@export_category("Display")
+@export var bank_display_time: float = 1.5
+
+@export_category("Colors")
+@export var active_combo_color: Color = Color("#F6C85F")
+@export var banked_score_color: Color = Color("#4AB7FF")
+@export var appeal_color: Color = Color("#4AB7FF")
+@export var trick_line_color: Color = Color("#FFFFFF")
+
 @onready var appeal_label: Label = %AppealLabel
-@onready var combo_label: Label = %ComboLabel
-@onready var event_feed: VBoxContainer = %EventFeed
+@onready var combo_score_label: Label = %ComboLabel
+@onready var trick_line_label: Label = %TrickLineLabel
 @onready var speed_label: Label = %SpeedLabel
 @onready var rpm_label: Label = %RPMLabel
 
+var trick_segments: Array[String] = []
+var current_spin_rotations: int = 0
+
+var showing_bank_result: bool = false
+var display_revision: int = 0
+
+
+#region Lifecycle
 
 func _ready() -> void:
 	if performance == null:
@@ -19,11 +36,19 @@ func _ready() -> void:
 	performance.appeal_changed.connect(_on_appeal_changed)
 	performance.combo_changed.connect(_on_combo_changed)
 	performance.event_scored.connect(_on_event_scored)
-	performance.combo_banked.connect(
-		_on_combo_banked
+	performance.combo_banked.connect(_on_combo_banked)
+
+	combo_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	trick_line_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	trick_line_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+	appeal_label.add_theme_color_override(
+		"font_color",
+		appeal_color
 	)
-	performance.combo_continued.connect(
-		_on_combo_continued
+	trick_line_label.add_theme_color_override(
+		"font_color",
+		trick_line_color
 	)
 
 	update_score_labels()
@@ -32,6 +57,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	update_telemetry()
 
+#endregion
+
+
+#region Telemetry
 
 func update_telemetry() -> void:
 	if ball != null:
@@ -46,6 +75,10 @@ func update_telemetry() -> void:
 			player.get_spin_rpm()
 		)
 
+#endregion
+
+
+#region Score Display
 
 func update_score_labels() -> void:
 	if performance == null:
@@ -56,91 +89,154 @@ func update_score_labels() -> void:
 		% performance.total_appeal
 	)
 
-	if performance.combo_points <= 0:
-		combo_label.text = "COMBO  —"
+	if showing_bank_result:
 		return
 
-	combo_label.text = "COMBO  %d  x%d" % [
-		performance.combo_points,
-		performance.combo_chain
+	if performance.combo_points > 0:
+		show_active_combo(
+			performance.combo_points,
+			performance.combo_chain
+		)
+	else:
+		combo_score_label.text = ""
+
+
+func show_active_combo(
+	points: int,
+	chain: int
+) -> void:
+	combo_score_label.text = "%d × %d" % [
+		points,
+		maxi(chain, 1)
 	]
 
-
-func show_event(
-	event_name: String,
-	points: int
-) -> void:
-	show_message(
-		"%s  +%d" % [
-			event_name,
-			points
-		]
+	combo_score_label.add_theme_color_override(
+		"font_color",
+		active_combo_color
 	)
 
 
-func show_message(text: String) -> void:
-	var label: Label = Label.new()
+func show_banked_score(points: int) -> void:
+	combo_score_label.text = "+%d APPEAL" % points
 
-	label.text = text
-	label.horizontal_alignment = (
-		HORIZONTAL_ALIGNMENT_CENTER
-	)
-
-	label.add_theme_font_size_override(
-		"font_size",
-		22
-	)
-
-	event_feed.add_child(label)
-
-	var tween: Tween = create_tween()
-
-	tween.tween_interval(0.8)
-
-	tween.tween_property(
-		label,
-		"modulate:a",
-		0.0,
-		0.5
-	)
-
-	tween.tween_callback(
-		label.queue_free
+	combo_score_label.add_theme_color_override(
+		"font_color",
+		banked_score_color
 	)
 
 
-func _on_appeal_changed(_value: int) -> void:
-	update_score_labels()
+func prepare_for_new_combo() -> void:
+	if not showing_bank_result:
+		return
+
+	showing_bank_result = false
+	display_revision += 1
+	clear_trick_line()
+
+#endregion
+
+
+#region Trick Line
+
+func add_spin_rotation() -> void:
+	current_spin_rotations += 1
+	update_trick_line()
+
+
+func finish_spin_segment() -> void:
+	if current_spin_rotations <= 0:
+		return
+
+	trick_segments.append(
+		"%d Spin" % (current_spin_rotations * 360)
+	)
+
+	current_spin_rotations = 0
+
+
+func update_trick_line() -> void:
+	var display_segments: Array[String] = trick_segments.duplicate()
+
+	if current_spin_rotations > 0:
+		display_segments.append(
+			"%d Spin" % (current_spin_rotations * 360)
+		)
+
+	trick_line_label.text = " + ".join(display_segments)
+
+
+func clear_trick_line() -> void:
+	trick_segments.clear()
+	current_spin_rotations = 0
+	trick_line_label.text = ""
+
+
+func clear_combo_display() -> void:
+	clear_trick_line()
+	combo_score_label.text = ""
+
+#endregion
+
+
+#region Performance Signals
+
+func _on_appeal_changed(value: int) -> void:
+	appeal_label.text = "APPEAL  %d" % value
+	appeal_label.add_theme_color_override(
+		"font_color",
+		appeal_color
+	)
 
 
 func _on_combo_changed(
-	_points: int,
-	_chain: int
+	points: int,
+	chain: int
 ) -> void:
-	update_score_labels()
+	if points <= 0:
+		return
+
+	prepare_for_new_combo()
+	show_active_combo(points, chain)
 
 
 func _on_event_scored(
 	event_name: String,
-	points: int
+	_points: int
 ) -> void:
-	show_event(event_name, points)
+	if event_name == "Bounce":
+		return
+
+	prepare_for_new_combo()
+
+	if event_name == "360 Spin":
+		add_spin_rotation()
+	else:
+		finish_spin_segment()
+		trick_segments.append(event_name)
+
+	update_trick_line()
 
 
 func _on_combo_banked(
 	points: int,
-	multiplier: float
+	_multiplier: float
 ) -> void:
-	show_message(
-		"BANKED  +%d  x%.2f" % [
-			points,
-			multiplier
-		]
-	)
+	finish_spin_segment()
+	update_trick_line()
 
+	showing_bank_result = true
+	display_revision += 1
 
-func _on_combo_continued(chain: int) -> void:
-	show_message(
-		"BOUNCE!  CHAIN x%d"
-		% chain
-	)
+	var bank_revision: int = display_revision
+
+	show_banked_score(points)
+
+	await get_tree().create_timer(bank_display_time).timeout
+
+	if bank_revision != display_revision:
+		return
+
+	showing_bank_result = false
+	clear_combo_display()
+
+#endregion
