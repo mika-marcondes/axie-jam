@@ -4,6 +4,21 @@ class_name BallController
 signal landed(impact_speed: float)
 signal bounced(impact_speed: float, bounce_velocity: float)
 
+enum BounceGrade {
+	NONE,
+	LATE,
+	GOOD,
+	PERFECT
+}
+
+
+#region Exports
+
+@export_category("References")
+@export var movement_reference: Node3D
+@export var rider: PlayerController
+@export var rider_shadow_target: Node3D
+
 @export_category("Movement")
 @export var acceleration: float = 14.0
 @export var max_speed: float = 10.0
@@ -20,41 +35,35 @@ signal bounced(impact_speed: float, bounce_velocity: float)
 @export_range(0.0, 1.0, 0.05) var air_control: float = 0.35
 
 @export_category("Bounce")
-@export_range(0.0, 1.0, 0.05)
-var bounce_retention: float = 0.75
-
-@export var bounce_input_window: float = 0.30
-
-@export_range(5.0, 90.0, 1.0)
-var bounce_alignment_angle: float = 35.0
-
-@export var bounce_preview_time: float = 0.45
-
-@export_range(45.0, 180.0, 1.0)
-var bounce_preview_angle: float = 110.0
-
-@export var bounce_shadow_normal_color: Color = Color("#181818")
-@export var bounce_shadow_ready_color: Color = Color("5fd4f5ff")
-@export var bounce_shadow_armed_color: Color = Color("#72E06A")
-var is_bounce_armed: bool = false
-
-@onready var bounce_glow: MeshInstance3D = $BounceGlow
+@export_range(0.0, 1.0, 0.05) var bounce_retention: float = 0.75
+@export var bounce_input_window: float = 0.50
 
 @export_category("Bounce Timing")
+@export_range(10.0, 120.0, 1.0) var bounce_permission_angle: float = 70.0
+@export_range(5.0, 90.0, 1.0) var bounce_good_angle: float = 35.0
+@export_range(2.0, 45.0, 1.0) var bounce_perfect_angle: float = 15.0
+@export var bounce_preview_time: float = 0.45
+@export_range(5.0, 90.0, 1.0) var bounce_alignment_angle: float = 35.0
+@export_range(45.0, 180.0, 1.0) var bounce_preview_angle: float = 110.0
 
-@export_range(10.0, 120.0, 1.0)
-var bounce_permission_angle: float = 70.0
-
-@export_range(5.0, 90.0, 1.0)
-var bounce_good_angle: float = 35.0
-
-@export_range(2.0, 45.0, 1.0)
-var bounce_perfect_angle: float = 15.0
+@export_category("Bounce Feedback")
+@export var bounce_shadow_normal_color: Color = Color("#181818")
+@export var bounce_shadow_ready_color: Color = Color("#5FD4F5")
+@export var bounce_glow_ready_color: Color = Color("#48DFFF")
+@export var bounce_late_color: Color = Color("#F6C85F")
+@export var bounce_good_color: Color = Color("#72E06A")
+@export var bounce_perfect_color: Color = Color("#B66CFF")
+@export var ground_shadow_bounce_feedback_enabled: bool = true
 
 @export_category("Boost")
 @export var boost_acceleration_multiplier: float = 1.6
 @export var boost_max_speed_multiplier: float = 1.4
 @export var boost_release_deceleration: float = 4.0
+
+@export_category("Gravity")
+@export var rise_gravity_multiplier: float = 0.9
+@export var fall_gravity_multiplier: float = 1.25
+@export var max_fall_speed: float = 18.0
 
 @export_category("Ground Shadow")
 @export var shadow_max_height: float = 10.0
@@ -65,7 +74,6 @@ var bounce_perfect_angle: float = 15.0
 @export var shadow_ground_offset: float = 0.02
 
 @export_category("Rider Shadow")
-@export var rider_shadow_target: Node3D
 @export var rider_shadow_surface_offset: float = 0.015
 @export var rider_shadow_follow_speed: float = 14.0
 @export var rider_shadow_max_separation: float = 1.5
@@ -74,48 +82,47 @@ var bounce_perfect_angle: float = 15.0
 @export var rider_shadow_min_opacity: float = 0.10
 @export var rider_shadow_max_opacity: float = 0.38
 
-@export_category("References")
-@export var movement_reference: Node3D
-@export var rider: PlayerController
+#endregion
+
+
+#region Node References
 
 @onready var visual: Node3D = $Visual
+@onready var bounce_glow: MeshInstance3D = $BounceGlow
 @onready var rider_anchor: Marker3D = $RiderAnchor
 @onready var ground_probe: RayCast3D = $GroundProbe
 @onready var ground_shadow: MeshInstance3D = $GroundShadow
 @onready var rider_shadow_root: Node3D = $RiderShadow
 @onready var rider_shadow_mesh: MeshInstance3D = $RiderShadow/MeshInstance3D
 
-@export_category("Gravity")
-@export var rise_gravity_multiplier: float = 0.9
-@export var fall_gravity_multiplier: float = 1.25
-@export var max_fall_speed: float = 18.0
+#endregion
+
+
+#region State
 
 var jump_charge_time: float = 0.0
 var is_charging_jump: bool = false
-var bounce_input_timer: float = 0.0
 var is_boosting: bool = false
+
+var bounce_input_timer: float = 0.0
+var is_bounce_armed: bool = false
+var armed_bounce_grade: BounceGrade = BounceGrade.NONE
 
 var ground_shadow_material: ShaderMaterial
 var rider_shadow_material: ShaderMaterial
 var bounce_glow_material: ShaderMaterial
-var armed_bounce_grade: BounceGrade = BounceGrade.NONE
 
 var gravity: float = float(
 	ProjectSettings.get_setting("physics/3d/default_gravity")
 )
 
-enum BounceGrade {
-	NONE,
-	LATE,
-	GOOD,
-	PERFECT
-}
+#endregion
+
 
 #region Lifecycle
 
 func _ready() -> void:
-	setup_shadow_materials()
-	setup_bounce_glow()
+	setup_visual_materials()
 
 
 func _physics_process(delta: float) -> void:
@@ -168,7 +175,11 @@ func handle_movement(delta: float) -> void:
 	if not is_on_floor():
 		control_multiplier = get_air_control_multiplier()
 
-	if is_on_floor() and not is_boosting and horizontal_velocity.length() > max_speed:
+	if (
+		is_on_floor()
+		and not is_boosting
+		and horizontal_velocity.length() > max_speed
+	):
 		var current_speed: float = horizontal_velocity.length()
 		var reduced_speed: float = move_toward(
 			current_speed,
@@ -176,13 +187,19 @@ func handle_movement(delta: float) -> void:
 			boost_release_deceleration * delta
 		)
 
-		horizontal_velocity = horizontal_velocity.normalized() * reduced_speed
+		horizontal_velocity = (
+			horizontal_velocity.normalized()
+			* reduced_speed
+		)
 
 	if has_movement_input:
 		input_direction = input_direction.normalized()
 
 		var speed_before_input: float = horizontal_velocity.length()
-		var allowed_speed: float = maxf(current_max_speed, speed_before_input)
+		var allowed_speed: float = maxf(
+			current_max_speed,
+			speed_before_input
+		)
 
 		if horizontal_velocity.length() < 0.1:
 			horizontal_velocity += (
@@ -193,9 +210,17 @@ func handle_movement(delta: float) -> void:
 			)
 		else:
 			var momentum_direction: Vector3 = horizontal_velocity.normalized()
-			var parallel_amount: float = input_direction.dot(momentum_direction)
-			var parallel_input: Vector3 = momentum_direction * parallel_amount
-			var lateral_input: Vector3 = input_direction - parallel_input
+			var parallel_amount: float = input_direction.dot(
+				momentum_direction
+			)
+			var parallel_input: Vector3 = (
+				momentum_direction
+				* parallel_amount
+			)
+			var lateral_input: Vector3 = (
+				input_direction
+				- parallel_input
+			)
 
 			horizontal_velocity += (
 				parallel_input
@@ -239,7 +264,11 @@ func get_movement_direction() -> Vector3:
 		return Vector3.ZERO
 
 	if movement_reference == null:
-		return Vector3(input.x, 0.0, input.y).normalized()
+		return Vector3(
+			input.x,
+			0.0,
+			input.y
+		).normalized()
 
 	var camera_forward: Vector3 = (
 		- movement_reference.global_transform.basis.z
@@ -281,7 +310,7 @@ func get_air_control_multiplier() -> float:
 #endregion
 
 
-#region Jump and Bounce
+#region Jump
 
 func handle_jump(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -321,6 +350,10 @@ func reset_jump_charge() -> void:
 	is_charging_jump = false
 	jump_charge_time = 0.0
 
+#endregion
+
+
+#region Bounce
 
 func update_bounce_input(delta: float) -> void:
 	bounce_input_timer = maxf(
@@ -329,16 +362,12 @@ func update_bounce_input(delta: float) -> void:
 	)
 
 	if bounce_input_timer <= 0.0:
-		is_bounce_armed = false
-		armed_bounce_grade = BounceGrade.NONE
+		clear_armed_bounce()
 
 	if not Input.is_action_just_pressed("jump"):
 		return
 
-	if is_on_floor():
-		return
-
-	if not can_arm_bounce():
+	if is_on_floor() or not can_arm_bounce():
 		return
 
 	armed_bounce_grade = get_bounce_grade()
@@ -367,29 +396,24 @@ func handle_landing(
 		return
 
 	var impact_speed: float = maxf(
-		-impact_velocity,
+		- impact_velocity,
 		0.0
 	)
 
 	landed.emit(impact_speed)
 
 	if not is_bounce_armed or bounce_input_timer <= 0.0:
-		is_bounce_armed = false
-		bounce_input_timer = 0.0
+		clear_armed_bounce()
 		return
 
 	var bounce_velocity: float = (
 		impact_speed
 		* bounce_retention
 	)
-
 	var min_bounce_velocity: float = (
 		jump_velocity * 0.75
 	)
-
-	var max_bounce_velocity: float = (
-		charged_jump_velocity
-	)
+	var max_bounce_velocity: float = charged_jump_velocity
 
 	bounce_velocity = clampf(
 		bounce_velocity,
@@ -398,15 +422,58 @@ func handle_landing(
 	)
 
 	velocity.y = bounce_velocity
-
-	is_bounce_armed = false
 	bounce_input_timer = 0.0
+	is_bounce_armed = false
 
 	bounced.emit(
 		impact_speed,
 		bounce_velocity
 	)
 
+
+func clear_armed_bounce() -> void:
+	is_bounce_armed = false
+	armed_bounce_grade = BounceGrade.NONE
+	bounce_input_timer = 0.0
+
+
+func get_bounce_grade() -> BounceGrade:
+	if rider == null:
+		return BounceGrade.NONE
+
+	var alignment: float = rider.get_spin_alignment_degrees()
+
+	if alignment <= bounce_perfect_angle:
+		return BounceGrade.PERFECT
+
+	if alignment <= bounce_good_angle:
+		return BounceGrade.GOOD
+
+	if alignment <= bounce_permission_angle:
+		return BounceGrade.LATE
+
+	return BounceGrade.NONE
+
+
+func get_bounce_grade_color(
+	grade: BounceGrade
+) -> Color:
+	match grade:
+		BounceGrade.LATE:
+			return bounce_late_color
+
+		BounceGrade.GOOD:
+			return bounce_good_color
+
+		BounceGrade.PERFECT:
+			return bounce_perfect_color
+
+	return bounce_glow_ready_color
+
+#endregion
+
+
+#region Bounce Feedback
 
 func is_bounce_preview_active() -> bool:
 	if rider == null:
@@ -425,9 +492,7 @@ func get_bounce_preview_strength() -> float:
 	if not is_bounce_preview_active():
 		return 0.0
 
-	var alignment_error: float = (
-		rider.get_spin_alignment_degrees()
-	)
+	var alignment_error: float = rider.get_spin_alignment_degrees()
 
 	if alignment_error >= bounce_preview_angle:
 		return 0.0
@@ -450,29 +515,12 @@ func get_bounce_preview_strength() -> float:
 	)
 
 
-func setup_bounce_glow() -> void:
-	if not bounce_glow.material_override is ShaderMaterial:
-		return
-
-	bounce_glow_material = (
-		bounce_glow.material_override.duplicate()
-		as ShaderMaterial
-	)
-
-	bounce_glow.material_override = bounce_glow_material
-
-	bounce_glow_material.set_shader_parameter(
-		"glow_strength",
-		0.0
-	)
-
-
 func update_bounce_glow() -> void:
 	if bounce_glow_material == null:
 		return
 
 	var strength: float = 0.0
-	var glow_color: Color = Color("#48DFFF")
+	var glow_color: Color = bounce_glow_ready_color
 
 	if is_bounce_armed:
 		strength = 1.0
@@ -489,48 +537,49 @@ func update_bounce_glow() -> void:
 		"glow_strength",
 		strength
 	)
-
 	bounce_glow_material.set_shader_parameter(
 		"glow_color",
 		glow_color
 	)
 
 
-func get_bounce_grade_color(
-	grade: BounceGrade
-) -> Color:
-	match grade:
-		BounceGrade.LATE:
-			return Color("#F6C85F")
+func update_ground_shadow_bounce_color() -> void:
+	if ground_shadow_material == null:
+		return
 
-		BounceGrade.GOOD:
-			return Color("#72E06A")
+	var shadow_color: Color = bounce_shadow_normal_color
 
-		BounceGrade.PERFECT:
-			return Color("#B66CFF")
+	if ground_shadow_bounce_feedback_enabled:
+		if is_bounce_armed:
+			shadow_color = get_bounce_grade_color(
+				armed_bounce_grade
+			)
+		elif is_bounce_preview_active():
+			var preview_strength: float = (
+				get_bounce_preview_strength()
+			)
 
-	return Color("#48DFFF")
+			shadow_color = bounce_shadow_normal_color.lerp(
+				bounce_shadow_ready_color,
+				preview_strength
+			)
 
-
-func get_bounce_grade() -> BounceGrade:
-	if rider == null:
-		return BounceGrade.NONE
-
-	var alignment: float = (
-		rider.get_spin_alignment_degrees()
+	ground_shadow_material.set_shader_parameter(
+		"shadow_color",
+		shadow_color
 	)
 
-	if alignment <= bounce_perfect_angle:
-		return BounceGrade.PERFECT
 
-	if alignment <= bounce_good_angle:
-		return BounceGrade.GOOD
+func set_ground_shadow_bounce_feedback_enabled(
+	enabled: bool
+) -> void:
+	ground_shadow_bounce_feedback_enabled = enabled
 
-	if alignment <= bounce_permission_angle:
-		return BounceGrade.LATE
-
-	return BounceGrade.NONE
-
+	if not enabled and ground_shadow_material != null:
+		ground_shadow_material.set_shader_parameter(
+			"shadow_color",
+			bounce_shadow_normal_color
+		)
 
 #endregion
 
@@ -547,10 +596,9 @@ func apply_gravity(delta: float) -> void:
 		gravity_multiplier = fall_gravity_multiplier
 
 	velocity.y -= gravity * gravity_multiplier * delta
-
 	velocity.y = maxf(
 		velocity.y,
-		-max_fall_speed
+		- max_fall_speed
 	)
 
 
@@ -562,6 +610,49 @@ func check_fall_reset() -> void:
 
 
 #region Visuals
+
+func setup_visual_materials() -> void:
+	ground_shadow.top_level = true
+
+	ground_shadow_material = duplicate_active_shader_material(
+		ground_shadow
+	)
+	rider_shadow_material = duplicate_active_shader_material(
+		rider_shadow_mesh
+	)
+	bounce_glow_material = duplicate_active_shader_material(
+		bounce_glow
+	)
+
+	if bounce_glow_material != null:
+		bounce_glow_material.set_shader_parameter(
+			"glow_strength",
+			0.0
+		)
+
+	if rider_shadow_target == null:
+		rider_shadow_mesh.visible = false
+
+
+func duplicate_active_shader_material(
+	mesh: MeshInstance3D
+) -> ShaderMaterial:
+	var source_material: Material = mesh.material_override
+
+	if not source_material is ShaderMaterial:
+		source_material = mesh.get_active_material(0)
+
+	if not source_material is ShaderMaterial:
+		return null
+
+	var material: ShaderMaterial = (
+		source_material.duplicate()
+		as ShaderMaterial
+	)
+
+	mesh.material_override = material
+	return material
+
 
 func update_visual_rotation(delta: float) -> void:
 	var horizontal_velocity: Vector3 = get_horizontal_velocity()
@@ -575,7 +666,11 @@ func update_visual_rotation(delta: float) -> void:
 		0.0,
 		- direction.x
 	).normalized()
-	var angle: float = horizontal_velocity.length() * delta / radius
+	var angle: float = (
+		horizontal_velocity.length()
+		* delta
+		/ radius
+	)
 
 	visual.rotate(
 		rotation_axis,
@@ -587,35 +682,6 @@ func update_visual_rotation(delta: float) -> void:
 
 #region Shadows
 
-func setup_shadow_materials() -> void:
-	ground_shadow.top_level = true
-
-	ground_shadow_material = duplicate_shadow_material(
-		ground_shadow
-	)
-	rider_shadow_material = duplicate_shadow_material(
-		rider_shadow_mesh
-	)
-
-	if rider_shadow_target == null:
-		rider_shadow_mesh.visible = false
-
-
-func duplicate_shadow_material(
-	mesh: MeshInstance3D
-) -> ShaderMaterial:
-	if not mesh.material_override is ShaderMaterial:
-		return null
-
-	var material: ShaderMaterial = (
-		mesh.material_override.duplicate()
-		as ShaderMaterial
-	)
-
-	mesh.material_override = material
-	return material
-
-
 func update_ground_shadow() -> void:
 	ground_probe.force_raycast_update()
 
@@ -626,7 +692,9 @@ func update_ground_shadow() -> void:
 	ground_shadow.visible = true
 
 	var ground_position: Vector3 = ground_probe.get_collision_point()
-	var height: float = global_position.distance_to(ground_position)
+	var height: float = global_position.distance_to(
+		ground_position
+	)
 	var height_ratio: float = clampf(
 		height / maxf(shadow_max_height, 0.001),
 		0.0,
@@ -657,7 +725,6 @@ func update_ground_shadow() -> void:
 		ground_shadow_material,
 		shadow_opacity
 	)
-	
 	update_ground_shadow_bounce_color()
 
 
@@ -696,8 +763,10 @@ func update_rider_shadow(delta: float) -> void:
 		shadow_position
 	)
 
-	var separation: float = rider_shadow_target.global_position.distance_to(
-		rider_anchor.global_position
+	var separation: float = (
+		rider_shadow_target.global_position.distance_to(
+			rider_anchor.global_position
+		)
 	)
 	var separation_ratio: float = clampf(
 		separation / maxf(rider_shadow_max_separation, 0.001),
@@ -724,34 +793,6 @@ func update_rider_shadow(delta: float) -> void:
 	set_shadow_opacity(
 		rider_shadow_material,
 		shadow_opacity
-	)
-
-
-func update_ground_shadow_bounce_color() -> void:
-	if ground_shadow_material == null:
-		return
-
-	var shadow_color: Color = (
-		bounce_shadow_normal_color
-	)
-
-	if is_bounce_armed:
-		shadow_color = bounce_shadow_armed_color
-	elif is_bounce_preview_active():
-		var preview_strength: float = (
-			get_bounce_preview_strength()
-		)
-
-		shadow_color = (
-			bounce_shadow_normal_color.lerp(
-				bounce_shadow_ready_color,
-				preview_strength
-			)
-		)
-
-	ground_shadow_material.set_shader_parameter(
-		"shadow_color",
-		shadow_color
 	)
 
 
@@ -790,6 +831,8 @@ func set_shadow_opacity(
 #endregion
 
 
+#region Ground Query
+
 func get_ground_clearance() -> float:
 	ground_probe.force_raycast_update()
 
@@ -799,7 +842,6 @@ func get_ground_clearance() -> float:
 	var ground_position: Vector3 = (
 		ground_probe.get_collision_point()
 	)
-
 	var center_distance: float = global_position.distance_to(
 		ground_position
 	)
@@ -823,13 +865,13 @@ func get_estimated_time_to_ground() -> float:
 		gravity * fall_gravity_multiplier,
 		0.001
 	)
-
 	var discriminant: float = (
-		velocity.y * velocity.y
-		+ 2.0 * fall_acceleration * clearance
+		velocity.y * velocity.y +2.0 * fall_acceleration * clearance
 	)
 
 	return (
 		velocity.y
 		+ sqrt(discriminant)
 	) / fall_acceleration
+
+#endregion
