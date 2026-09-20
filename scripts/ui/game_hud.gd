@@ -4,6 +4,17 @@ extends CanvasLayer
 @export var ball: BallController
 @export var player: PlayerController
 @export var performance: PerformanceController
+@export var contest: ContestController
+
+@onready var time_label: Label = %TimeLabel
+
+@export_category("Spotlight Feedback")
+@export var spotlight_feedback_time: float = 1.2
+@export var spotlight_feedback_color: Color = Color("#5FD4F5")
+
+@onready var spotlight_feedback_label: Label = (
+	%SpotlightFeedbackLabel
+)
 
 @export_category("Display")
 @export var bank_display_time: float = 1.5
@@ -36,10 +47,24 @@ var showing_bank_result: bool = false
 var display_revision: int = 0
 var bounce_feedback_revision: int = 0
 
+var spotlight_feedback_revision: int = 0
 
 #region Lifecycle
 
 func _ready() -> void:
+	if contest != null:
+		contest.progress_changed.connect(
+			_on_contest_progress_changed
+		)
+
+		contest.time_changed.connect(
+			_on_contest_time_changed
+		)
+
+		contest.spotlight_cleared.connect(
+			_on_spotlight_cleared
+		)
+	
 	if performance == null:
 		return
 
@@ -312,14 +337,14 @@ func clear_combo_display() -> void:
 func _on_appeal_changed(
 	value: int
 ) -> void:
-	appeal_label.text = (
-		"APPEAL  %d"
-		% value
-	)
-	appeal_label.add_theme_color_override(
-		"font_color",
-		appeal_color
-	)
+	if contest != null:
+		_on_contest_progress_changed(
+			value,
+			contest.current_target
+		)
+		return
+
+	appeal_label.text = "APPEAL  %d" % value
 
 
 func _on_combo_changed(
@@ -443,5 +468,86 @@ func _on_bounce_feedback(
 		return
 
 	bounce_feedback_label.text = ""
+
+
+func _on_contest_progress_changed(
+	current_appeal: int,
+	target_appeal: int
+) -> void:
+	appeal_label.text = "APPEAL  %d / %d" % [
+		current_appeal,
+		target_appeal
+	]
+
+
+func _on_contest_time_changed(
+	remaining: float,
+	overtime: bool
+) -> void:
+	var total_seconds: int = ceili(
+		remaining
+	)
+
+	var minutes: int = (
+		total_seconds / 60
+	)
+
+	var seconds: int = (
+		total_seconds % 60
+	)
+
+	time_label.text = "TIME  %d:%02d" % [
+		minutes,
+		seconds
+	]
+
+	if overtime:
+		time_label.text = "TIME  0:00  OVERTIME"
+
+
+func _on_spotlight_cleared(
+	spotlight: int
+) -> void:
+	spotlight_feedback_revision += 1
+
+	var revision: int = (
+		spotlight_feedback_revision
+	)
+
+	spotlight_feedback_label.text = (
+		"SPOTLIGHT %d CLEARED!"
+		% spotlight
+	)
+
+	spotlight_feedback_label.add_theme_color_override(
+		"font_color",
+		spotlight_feedback_color
+	)
+
+	spotlight_feedback_label.modulate.a = 1.0
+	spotlight_feedback_label.visible = true
+
+	await get_tree().create_timer(
+		spotlight_feedback_time
+	).timeout
+
+	if revision != spotlight_feedback_revision:
+		return
+
+	var tween: Tween = create_tween()
+
+	tween.tween_property(
+		spotlight_feedback_label,
+		"modulate:a",
+		0.0,
+		0.25
+	)
+
+	await tween.finished
+
+	if revision != spotlight_feedback_revision:
+		return
+
+	spotlight_feedback_label.visible = false
 
 #endregion
