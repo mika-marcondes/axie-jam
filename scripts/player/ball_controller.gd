@@ -48,6 +48,7 @@ signal bounced(impact_speed: float, bounce_velocity: float)
 
 @export_category("References")
 @export var movement_reference: Node3D
+@export var rider: PlayerController
 
 @onready var visual: Node3D = $Visual
 @onready var rider_anchor: Marker3D = $RiderAnchor
@@ -55,6 +56,11 @@ signal bounced(impact_speed: float, bounce_velocity: float)
 @onready var ground_shadow: MeshInstance3D = $GroundShadow
 @onready var rider_shadow_root: Node3D = $RiderShadow
 @onready var rider_shadow_mesh: MeshInstance3D = $RiderShadow/MeshInstance3D
+
+@export_category("Gravity")
+@export var rise_gravity_multiplier: float = 0.9
+@export var fall_gravity_multiplier: float = 1.25
+@export var max_fall_speed: float = 18.0
 
 var jump_charge_time: float = 0.0
 var is_charging_jump: bool = false
@@ -122,7 +128,7 @@ func handle_movement(delta: float) -> void:
 		current_max_speed *= boost_max_speed_multiplier
 
 	if not is_on_floor():
-		control_multiplier = air_control
+		control_multiplier = get_air_control_multiplier()
 
 	if is_on_floor() and not is_boosting and horizontal_velocity.length() > max_speed:
 		var current_speed: float = horizontal_velocity.length()
@@ -227,6 +233,13 @@ func get_horizontal_velocity() -> Vector3:
 func get_horizontal_speed() -> float:
 	return get_horizontal_velocity().length()
 
+
+func get_air_control_multiplier() -> float:
+	if rider != null and rider.is_diving():
+		return 0.0
+
+	return air_control
+
 #endregion
 
 
@@ -318,8 +331,20 @@ func handle_landing(
 #region Physics
 
 func apply_gravity(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y -= gravity * delta
+	if is_on_floor():
+		return
+
+	var gravity_multiplier: float = rise_gravity_multiplier
+
+	if velocity.y < 0.0:
+		gravity_multiplier = fall_gravity_multiplier
+
+	velocity.y -= gravity * gravity_multiplier * delta
+
+	velocity.y = maxf(
+		velocity.y,
+		-max_fall_speed
+	)
 
 
 func check_fall_reset() -> void:
