@@ -476,7 +476,7 @@ func get_best_jump_height() -> float:
 
 
 func get_rider_shadow_position() -> Vector3:
-	return air_offset_root.global_position
+	return trick_pivot.global_position
 
 
 func get_catch_distance() -> float:

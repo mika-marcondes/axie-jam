@@ -4,6 +4,7 @@
 [ext_resource type="Shader" uid="uid://ce5wwmpkopvmh" path="res://scenes/player/ball.gdshader" id="2_jxcsf"]
 [ext_resource type="Shader" uid="uid://detpkt7evo5bu" path="res://scenes/player/ball_shadow.gdshader" id="3_8x03u"]
 [ext_resource type="Shader" uid="uid://ciiiwvw75cw2c" path="res://shaders/ball/bounce_glow.gdshader" id="3_cladr"]
+[ext_resource type="Shader" uid="uid://cec5qvfii57nj" path="res://shaders/ball/ball_rider_shadow.gdshader" id="5_gw4ti"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r5vmv"]
 render_priority = 0
@@ -34,14 +35,13 @@ shader_parameter/opacity = 0.45
 [sub_resource type="PlaneMesh" id="PlaneMesh_brmbs"]
 size = Vector2(1.2, 1.2)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8x03u"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fuvcc"]
 render_priority = 0
-shader = ExtResource("3_8x03u")
+shader = ExtResource("5_gw4ti")
 shader_parameter/shadow_color = Color(0, 0, 0, 1)
-shader_parameter/opacity = 0.8830000419425
+shader_parameter/opacity = 1.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_dbjuf"]
-material = SubResource("ShaderMaterial_8x03u")
 size = Vector2(1, 1)
 
 [node name="Ball" type="CharacterBody3D" unique_id=1570341470]
@@ -72,4 +72,5 @@ mesh = SubResource("PlaneMesh_brmbs")
 [node name="RiderShadow" type="Node3D" parent="." unique_id=1462485099]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RiderShadow" unique_id=259958210]
+material_override = SubResource("ShaderMaterial_fuvcc")
 mesh = SubResource("PlaneMesh_dbjuf")

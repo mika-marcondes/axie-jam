@@ -21,7 +21,6 @@ enum BounceGrade {
 @export_category("References")
 @export var movement_reference: Node3D
 @export var rider: PlayerController
-@export var rider_shadow_target: Node3D
 
 @export_category("Movement")
 @export var acceleration: float = 14.0
@@ -81,13 +80,14 @@ enum BounceGrade {
 @export var shadow_ground_offset: float = 0.02
 
 @export_category("Rider Shadow")
-@export var rider_shadow_surface_offset: float = 0.015
+@export var rider_shadow_surface_offset: float = 0.025
 @export var rider_shadow_follow_speed: float = 14.0
 @export var rider_shadow_max_separation: float = 1.5
 @export var rider_shadow_min_scale: float = 0.45
 @export var rider_shadow_max_scale: float = 0.85
-@export var rider_shadow_min_opacity: float = 0.10
-@export var rider_shadow_max_opacity: float = 0.38
+@export var rider_shadow_min_opacity: float = 0.30
+@export var rider_shadow_max_opacity: float = 0.65
+@export var rider_shadow_color: Color = Color("#10131A")
 
 #endregion
 
@@ -704,8 +704,14 @@ func setup_visual_materials() -> void:
 			"glow_strength",
 			0.0
 		)
+	
+	if rider_shadow_material != null:
+		rider_shadow_material.set_shader_parameter(
+			"shadow_color",
+			rider_shadow_color
+		)
 
-	if rider_shadow_target == null:
+	if rider == null:
 		rider_shadow_mesh.visible = false
 
 
@@ -804,33 +810,41 @@ func update_ground_shadow() -> void:
 
 
 func update_rider_shadow(delta: float) -> void:
-	if rider_shadow_target == null:
-		rider_shadow_mesh.visible = false
-		return
-
-	var local_target: Vector3 = to_local(
-		rider_shadow_target.global_position
-	)
-
-	if local_target.length_squared() < 0.0001:
+	if rider == null:
 		rider_shadow_mesh.visible = false
 		return
 
 	rider_shadow_mesh.visible = true
 
-	var surface_normal: Vector3 = local_target.normalized()
+	var rider_position: Vector3 = (
+		rider.get_rider_shadow_position()
+	)
+
+	var local_target: Vector3 = to_local(
+		rider_position
+	)
+
+	var surface_normal: Vector3 = Vector3.UP
+
+	if local_target.length_squared() > 0.0001:
+		surface_normal = local_target.normalized()
+
 	var target_position: Vector3 = (
 		surface_normal
 		* (radius + rider_shadow_surface_offset)
 	)
+
 	var follow_weight: float = clampf(
 		rider_shadow_follow_speed * delta,
 		0.0,
 		1.0
 	)
-	var shadow_position: Vector3 = rider_shadow_root.position.lerp(
-		target_position,
-		follow_weight
+
+	var shadow_position: Vector3 = (
+		rider_shadow_root.position.lerp(
+			target_position,
+			follow_weight
+		)
 	)
 
 	rider_shadow_root.transform = Transform3D(
@@ -839,20 +853,27 @@ func update_rider_shadow(delta: float) -> void:
 	)
 
 	var separation: float = (
-		rider_shadow_target.global_position.distance_to(
+		rider_position.distance_to(
 			rider_anchor.global_position
 		)
 	)
+
 	var separation_ratio: float = clampf(
-		separation / maxf(rider_shadow_max_separation, 0.001),
+		separation
+		/ maxf(
+			rider_shadow_max_separation,
+			0.001
+		),
 		0.0,
 		1.0
 	)
+
 	var shadow_scale: float = lerpf(
 		rider_shadow_max_scale,
 		rider_shadow_min_scale,
 		separation_ratio
 	)
+
 	var shadow_opacity: float = lerpf(
 		rider_shadow_max_opacity,
 		rider_shadow_min_opacity,
