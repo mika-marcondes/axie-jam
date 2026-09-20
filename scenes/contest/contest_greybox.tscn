@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dveyac02bqln8" path="res://scenes/player/player.tscn" id="1_r5vmv"]
 [ext_resource type="Resource" uid="uid://dcpfnx2spfqbf" path="res://data/scoring/default_scoring_config.tres" id="2_60nno"]
 [ext_resource type="PackedScene" uid="uid://diill28ak0gww" path="res://scenes/player/ball.tscn" id="2_ccxh4"]
+[ext_resource type="PackedScene" uid="uid://dmu33tp6gcewx" path="res://scenes/arena/arena.tscn" id="3_a53xj"]
 [ext_resource type="Script" uid="uid://br0hfpbv8lnf1" path="res://scripts/camera/camera_rig.gd" id="4_aps6a"]
 [ext_resource type="PackedScene" uid="uid://bfrpeh1opo6n5" path="res://scenes/ui/dev_panel.tscn" id="5_dc481"]
 [ext_resource type="PackedScene" uid="uid://c1b08joeg3760" path="res://scenes/ui/game_hud.tscn" id="7_svnmd"]
@@ -30,7 +31,14 @@ ball = NodePath("Ball")
 player = NodePath("Player")
 scoring = ExtResource("2_60nno")
 
+[node name="Arena" parent="." unique_id=1798231292 instance=ExtResource("3_a53xj")]
+arena_width = 80.0
+arena_length = 120.0
+barrier_collision_height = null
+barrier_thickness = 0.4
+
 [node name="Floor" type="StaticBody3D" parent="." unique_id=27720150]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1930990869]
 shape = SubResource("BoxShape3D_brmbs")

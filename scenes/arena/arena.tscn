@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://dmu33tp6gcewx"]
+
+[ext_resource type="Script" uid="uid://bgfj3qm4mgmag" path="res://scripts/arena/arena_controller.gd" id="1_1qjuf"]
+[ext_resource type="Shader" uid="uid://ddl7gqodm82t5" path="res://scenes/contest/contest_greybox.gdshader" id="2_8trdl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1qjuf"]
+render_priority = 0
+shader = ExtResource("2_8trdl")
+shader_parameter/color_a = Color(0.18, 0.18, 0.18, 1)
+shader_parameter/color_b = Color(0.1, 0.1, 0.1, 1)
+shader_parameter/checker_scale = 20.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_brmbs"]
+size = Vector3(20, 0.25, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dbjuf"]
+size = Vector3(20, 0.25, 30)
+
+[sub_resource type="BoxMesh" id="BoxMesh_n62jo"]
+size = Vector3(20.4, 1, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1qjuf"]
+size = Vector3(20.4, 1, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8trdl"]
+size = Vector3(20.4, 1, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5tue2"]
+size = Vector3(20.4, 1, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_aj7ud"]
+size = Vector3(0.2, 1, 30.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_asdgj"]
+size = Vector3(0.2, 1, 30.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dbjuf"]
+size = Vector3(0.2, 1, 30.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_brmbs"]
+size = Vector3(0.2, 1, 30.4)
+
+[node name="Arena" type="Node3D" unique_id=1798231292]
+script = ExtResource("1_1qjuf")
+arena_width = 20.0
+arena_length = 30.0
+barrier_thickness = 0.2
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1199269271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=808239981]
+material_override = SubResource("ShaderMaterial_1qjuf")
+mesh = SubResource("BoxMesh_brmbs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1059480038]
+shape = SubResource("BoxShape3D_dbjuf")
+
+[node name="Barriers" type="Node3D" parent="." unique_id=1756195821]
+
+[node name="North" type="StaticBody3D" parent="Barriers" unique_id=1029993821]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -15.1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Barriers/North" unique_id=824815850]
+mesh = SubResource("BoxMesh_n62jo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/North" unique_id=1187327844]
+shape = SubResource("BoxShape3D_1qjuf")
+
+[node name="South" type="StaticBody3D" parent="Barriers" unique_id=1293672197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 15.1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Barriers/South" unique_id=872747298]
+mesh = SubResource("BoxMesh_8trdl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/South" unique_id=2005643555]
+shape = SubResource("BoxShape3D_5tue2")
+
+[node name="East" type="StaticBody3D" parent="Barriers" unique_id=219664739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1, 0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Barriers/East" unique_id=1538408897]
+mesh = SubResource("BoxMesh_aj7ud")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/East" unique_id=567583537]
+shape = SubResource("BoxShape3D_asdgj")
+
+[node name="West" type="StaticBody3D" parent="Barriers" unique_id=1186486200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1, 0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Barriers/West" unique_id=667535528]
+mesh = SubResource("BoxMesh_dbjuf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/West" unique_id=470105279]
+shape = SubResource("BoxShape3D_brmbs")

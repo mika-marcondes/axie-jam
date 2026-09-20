@@ -7,7 +7,6 @@ extends CanvasLayer
 
 @export_category("Display")
 @export var bank_display_time: float = 1.5
-@export_range(0.0, 1.0, 0.05) var tuck_display_threshold: float = 0.5
 
 @export_category("Colors")
 @export var active_combo_color: Color = Color("#F6C85F")
@@ -18,17 +17,20 @@ extends CanvasLayer
 @export_category("Bounce Feedback")
 @export var bounce_feedback_display_time: float = 0.65
 
+@onready var bounce_feedback_label: Label = (
+	%BounceFeedbackLabel
+)
+
 @onready var appeal_label: Label = %AppealLabel
 @onready var combo_score_label: Label = %ComboLabel
 @onready var trick_line_label: Label = %TrickLineLabel
-@onready var bounce_feedback_label: Label = %BounceFeedbackLabel
 @onready var speed_label: Label = %SpeedLabel
 @onready var rpm_label: Label = %RPMLabel
 
 var trick_segments: Array[String] = []
+
+var current_spin_family: String = ""
 var current_spin_rotations: int = 0
-var current_spin_direction: String = ""
-var current_spin_tucked: bool = false
 
 var showing_bank_result: bool = false
 var display_revision: int = 0
@@ -38,15 +40,18 @@ var bounce_feedback_revision: int = 0
 #region Lifecycle
 
 func _ready() -> void:
-	if ball != null:
-		ball.bounce_feedback.connect(
-			_on_bounce_feedback
-		)
-
-	bounce_feedback_label.text = ""
-
 	if performance == null:
 		return
+
+	if ball != null:
+		if not ball.bounce_feedback.is_connected(
+			_on_bounce_feedback
+		):
+			ball.bounce_feedback.connect(
+				_on_bounce_feedback
+			)
+
+	bounce_feedback_label.text = ""
 
 	performance.appeal_changed.connect(
 		_on_appeal_changed
@@ -82,14 +87,14 @@ func _ready() -> void:
 
 	update_score_labels()
 
-
-func _process(_delta: float) -> void:
-	update_telemetry()
-
 #endregion
 
 
 #region Telemetry
+
+func _process(_delta: float) -> void:
+	update_telemetry()
+
 
 func update_telemetry() -> void:
 	if ball != null:
@@ -98,7 +103,10 @@ func update_telemetry() -> void:
 			ball.velocity.z
 		).length()
 
-		speed_label.text = "SPEED  %.1f" % speed
+		speed_label.text = (
+			"SPEED  %.1f"
+			% speed
+		)
 
 	if player != null:
 		var rpm: float = absf(
@@ -110,7 +118,10 @@ func update_telemetry() -> void:
 
 		rpm_label.text = (
 			"RPM  %.0f    AIR  %.1f m"
-			% [rpm, air_height]
+			% [
+				rpm,
+				air_height
+			]
 		)
 
 #endregion
@@ -136,21 +147,23 @@ func update_score_labels() -> void:
 
 	if performance.combo_points > 0:
 		update_combo_score(
-			performance.combo_points,
-			performance.combo_chain
+			performance.combo_points
 		)
 	else:
 		combo_score_label.text = ""
 
 
 func update_combo_score(
-	points: int,
-	chain: int
+	points: int
 ) -> void:
-	combo_score_label.text = "%d × %d" % [
-		points,
-		maxi(chain, 1)
-	]
+	combo_score_label.text = (
+		"%d × %.1f"
+		% [
+			points,
+			performance.get_combo_multiplier()
+		]
+	)
+
 	combo_score_label.add_theme_color_override(
 		"font_color",
 		active_combo_color
@@ -163,123 +176,98 @@ func cancel_bank_display_for_new_combo() -> void:
 
 	showing_bank_result = false
 	display_revision += 1
-	clear_combo_display()
+
+	clear_trick_line()
+
+	combo_score_label.text = ""
+	trick_line_label.text = ""
 
 #endregion
 
 
 #region Trick Line
 
-func add_spin_rotation() -> void:
-	if player == null:
-		return
-
-	var direction: String = get_spin_direction()
-	var tucked: bool = (
-		player.get_tuck_amount()
-		>= tuck_display_threshold
+func is_spin_event(
+	event_name: String
+) -> bool:
+	return (
+		event_name == "L Spin"
+		or event_name == "R Spin"
+		or event_name == "L Tuck Spin"
+		or event_name == "R Tuck Spin"
 	)
 
-	if direction.is_empty():
-		direction = current_spin_direction
 
-	var same_spin: bool = (
+func add_spin_event(
+	event_name: String
+) -> void:
+	if (
 		current_spin_rotations > 0
-		and current_spin_direction == direction
-		and current_spin_tucked == tucked
-	)
-
-	if current_spin_rotations > 0 and not same_spin:
+		and current_spin_family != event_name
+	):
 		finish_spin_segment()
 
 	if current_spin_rotations <= 0:
-		current_spin_direction = direction
-		current_spin_tucked = tucked
+		current_spin_family = event_name
 
 	current_spin_rotations += 1
 	update_trick_line()
-
-
-func get_spin_direction() -> String:
-	if player == null:
-		return ""
-
-	var spin_velocity: float = (
-		player.get_spin_velocity()
-	)
-
-	if spin_velocity > 0.01:
-		return "R"
-
-	if spin_velocity < -0.01:
-		return "L"
-
-	return ""
 
 
 func finish_spin_segment() -> void:
 	if current_spin_rotations <= 0:
 		return
 
-	var segment: String = build_spin_segment(
-		current_spin_rotations,
-		current_spin_direction,
-		current_spin_tucked
+	trick_segments.append(
+		build_current_spin_segment()
 	)
 
-	if not segment.is_empty():
-		trick_segments.append(segment)
-
+	current_spin_family = ""
 	current_spin_rotations = 0
-	current_spin_direction = ""
-	current_spin_tucked = false
 
 
 func build_current_spin_segment() -> String:
-	return build_spin_segment(
-		current_spin_rotations,
-		current_spin_direction,
-		current_spin_tucked
-	)
-
-
-func build_spin_segment(
-	rotations: int,
-	direction: String,
-	tucked: bool
-) -> String:
-	if rotations <= 0:
+	if current_spin_rotations <= 0:
 		return ""
 
-	var degrees: int = rotations * 360
-	var direction_prefix: String = ""
+	var degrees: int = (
+		current_spin_rotations
+		* 360
+	)
 
-	if not direction.is_empty():
-		direction_prefix = "%s " % direction
+	if current_spin_family == "L Tuck Spin":
+		return "L %d Tuck Spin" % degrees
 
-	if tucked:
-		return "%s%d Tuck Spin" % [
-			direction_prefix,
-			degrees
-		]
+	if current_spin_family == "R Tuck Spin":
+		return "R %d Tuck Spin" % degrees
 
-	return "%s%d Spin" % [
-		direction_prefix,
-		degrees
-	]
+	if current_spin_family == "L Spin":
+		return "L %d Spin" % degrees
+
+	if current_spin_family == "R Spin":
+		return "R %d Spin" % degrees
+
+	return "%d Spin" % degrees
 
 
-func add_trick_event(event_name: String) -> void:
+func add_trick_event(
+	event_name: String
+) -> void:
 	finish_spin_segment()
-	trick_segments.append(event_name)
+
+	trick_segments.append(
+		event_name
+	)
+
 	update_trick_line()
 
 
-func is_air_event(event_name: String) -> bool:
+func is_air_event(
+	event_name: String
+) -> bool:
 	return (
 		event_name.begins_with("Small Air ")
 		or event_name.begins_with("Air ")
-		or event_name.begins_with("Medium Air ")
 		or event_name.begins_with("Big Air ")
 		or event_name.begins_with("Huge Air ")
 	)
@@ -289,6 +277,7 @@ func update_trick_line() -> void:
 	var display_segments: Array[String] = (
 		trick_segments.duplicate()
 	)
+
 	var current_spin: String = (
 		build_current_spin_segment()
 	)
@@ -303,11 +292,14 @@ func update_trick_line() -> void:
 	)
 
 
-func clear_combo_display() -> void:
+func clear_trick_line() -> void:
 	trick_segments.clear()
+	current_spin_family = ""
 	current_spin_rotations = 0
-	current_spin_direction = ""
-	current_spin_tucked = false
+
+
+func clear_combo_display() -> void:
+	clear_trick_line()
 
 	combo_score_label.text = ""
 	trick_line_label.text = ""
@@ -317,8 +309,13 @@ func clear_combo_display() -> void:
 
 #region Performance Signals
 
-func _on_appeal_changed(value: int) -> void:
-	appeal_label.text = "APPEAL  %d" % value
+func _on_appeal_changed(
+	value: int
+) -> void:
+	appeal_label.text = (
+		"APPEAL  %d"
+		% value
+	)
 	appeal_label.add_theme_color_override(
 		"font_color",
 		appeal_color
@@ -327,7 +324,7 @@ func _on_appeal_changed(value: int) -> void:
 
 func _on_combo_changed(
 	points: int,
-	chain: int
+	_chain: int
 ) -> void:
 	if points <= 0:
 		return
@@ -336,8 +333,7 @@ func _on_combo_changed(
 		cancel_bank_display_for_new_combo()
 
 	update_combo_score(
-		points,
-		chain
+		points
 	)
 
 
@@ -351,8 +347,10 @@ func _on_event_scored(
 	if event_name == "Bounce":
 		return
 
-	if event_name == "360 Spin":
-		add_spin_rotation()
+	if is_spin_event(event_name):
+		add_spin_event(
+			event_name
+		)
 		return
 
 	if is_air_event(event_name):
@@ -360,7 +358,9 @@ func _on_event_scored(
 		update_trick_line()
 		return
 
-	add_trick_event(event_name)
+	add_trick_event(
+		event_name
+	)
 
 
 func _on_combo_banked(
@@ -373,9 +373,14 @@ func _on_combo_banked(
 	showing_bank_result = true
 	display_revision += 1
 
-	var bank_revision: int = display_revision
+	var bank_revision: int = (
+		display_revision
+	)
 
-	combo_score_label.text = "+%d APPEAL" % points
+	combo_score_label.text = (
+		"+%d APPEAL"
+		% points
+	)
 	combo_score_label.add_theme_color_override(
 		"font_color",
 		banked_score_color
@@ -413,14 +418,22 @@ func _on_bounce_feedback(
 		_:
 			return
 
-	bounce_feedback_label.text = feedback_text
+	bounce_feedback_label.text = (
+		feedback_text
+	)
+
 	bounce_feedback_label.add_theme_color_override(
 		"font_color",
-		ball.get_bounce_grade_color(grade)
+		ball.get_bounce_grade_color(
+			grade
+		)
 	)
 
 	bounce_feedback_revision += 1
-	var revision: int = bounce_feedback_revision
+
+	var revision: int = (
+		bounce_feedback_revision
+	)
 
 	await get_tree().create_timer(
 		bounce_feedback_display_time
