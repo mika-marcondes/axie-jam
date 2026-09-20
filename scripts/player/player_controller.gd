@@ -227,10 +227,13 @@ func update_jump_tracking() -> void:
 		current_jump_height = 0.0
 
 	if airborne:
-		jump_peak_y = maxf(jump_peak_y, current_y)
+		jump_peak_y = maxf(
+			jump_peak_y,
+			current_y
+		)
 
 		current_jump_height = maxf(
-			current_y - jump_start_y,
+			jump_peak_y - jump_start_y,
 			0.0
 		)
 
@@ -531,3 +534,17 @@ func get_spin_alignment_degrees() -> float:
 	return absf(
 		rad_to_deg(wrapped_angle)
 	)
+
+
+func get_spin_direction_label() -> String:
+	if air_spin_velocity > 0.01:
+		return "R"
+
+	if air_spin_velocity < -0.01:
+		return "L"
+
+	return ""
+
+
+func is_tucked() -> bool:
+	return tuck_amount >= 0.5

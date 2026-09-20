@@ -8,14 +8,15 @@ anchor_right = 1.0
 offset_bottom = 47.0
 grow_horizontal = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
 
 [node name="AppealLabel" type="Label" parent="MarginContainer" unique_id=894774551]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
 text = "Appeal"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1787641378]
@@ -36,7 +37,6 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 24
 text = "Trick"
 horizontal_alignment = 1
 
@@ -66,25 +66,42 @@ anchor_bottom = 1.0
 offset_top = -23.0
 offset_right = 1896.0
 grow_vertical = 0
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
 
-[node name="SpeedLabel" type="Label" parent="BottomLeft" unique_id=792741126]
+[node name="TelemetryColumn" type="VBoxContainer" parent="BottomLeft" unique_id=1133877896]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="BottomLeft/TelemetryColumn" unique_id=792741126]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
 text = "Speed"
 
-[node name="BottomRight" type="MarginContainer" parent="." unique_id=309793690]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1896.0
-offset_top = -23.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="VBoxContainer" type="HBoxContainer" parent="BottomLeft/TelemetryColumn" unique_id=1288874221]
+layout_mode = 2
 
-[node name="RPMLabel" type="Label" parent="BottomRight" unique_id=449807877]
+[node name="RPMLabel" type="Label" parent="BottomLeft/TelemetryColumn/VBoxContainer" unique_id=449807877]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
 text = "RPM"
-horizontal_alignment = 2
+
+[node name="AirLabel" type="Label" parent="BottomLeft/TelemetryColumn/VBoxContainer" unique_id=632095589]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+
+[node name="BottomRight" type="MarginContainer" parent="." unique_id=309793690]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 1896.0
+grow_vertical = 0
