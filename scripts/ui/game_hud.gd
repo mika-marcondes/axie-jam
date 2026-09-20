@@ -14,6 +14,13 @@ extends CanvasLayer
 @export var appeal_color: Color = Color("#4AB7FF")
 @export var trick_line_color: Color = Color("#FFFFFF")
 
+@export_category("Bounce Feedback")
+@export var bounce_feedback_display_time: float = 0.65
+
+@onready var bounce_feedback_label: Label = (
+	%BounceFeedbackLabel
+)
+
 @onready var appeal_label: Label = %AppealLabel
 @onready var combo_score_label: Label = %ComboLabel
 @onready var trick_line_label: Label = %TrickLineLabel
@@ -28,13 +35,22 @@ var current_jump_height: String = ""
 var showing_bank_result: bool = false
 var display_revision: int = 0
 
+var bounce_feedback_revision: int = 0
+
 
 #region Lifecycle
 
 func _ready() -> void:
 	if performance == null:
 		return
+	
+	if ball != null:
+		ball.bounce_feedback.connect(
+			_on_bounce_feedback
+		)
 
+	bounce_feedback_label.text = ""
+	
 	performance.appeal_changed.connect(_on_appeal_changed)
 	performance.combo_changed.connect(_on_combo_changed)
 	performance.event_scored.connect(_on_event_scored)
@@ -302,5 +318,46 @@ func _on_combo_banked(
 
 	showing_bank_result = false
 	clear_combo_display()
+
+func _on_bounce_feedback(
+	grade: BallController.BounceGrade
+) -> void:
+	var feedback_text: String = ""
+
+	match grade:
+		BallController.BounceGrade.MISS:
+			feedback_text = "MISS"
+
+		BallController.BounceGrade.LATE:
+			feedback_text = "LATE"
+
+		BallController.BounceGrade.GOOD:
+			feedback_text = "GOOD"
+
+		BallController.BounceGrade.PERFECT:
+			feedback_text = "PERFECT!"
+
+		_:
+			return
+
+	bounce_feedback_label.text = feedback_text
+
+	bounce_feedback_label.add_theme_color_override(
+		"font_color",
+		ball.get_bounce_grade_color(grade)
+	)
+
+	bounce_feedback_revision += 1
+
+	var revision: int = bounce_feedback_revision
+
+	await get_tree().create_timer(
+		bounce_feedback_display_time
+	).timeout
+
+	if revision != bounce_feedback_revision:
+		return
+
+	bounce_feedback_label.text = ""
 
 #endregion

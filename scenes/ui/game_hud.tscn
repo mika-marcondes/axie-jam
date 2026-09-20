@@ -40,6 +40,15 @@ theme_override_font_sizes/font_size = 24
 text = "Trick"
 horizontal_alignment = 1
 
+[node name="BounceFeedbackLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1474827103]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "Accuracy"
+horizontal_alignment = 1
+
 [node name="EventCenter" type="CenterContainer" parent="." unique_id=235040045]
 offset_left = 12.0
 offset_top = 12.0

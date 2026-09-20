@@ -3,9 +3,13 @@ class_name BallController
 
 signal landed(impact_speed: float)
 signal bounced(impact_speed: float, bounce_velocity: float)
+signal bounce_feedback(
+	grade: BounceGrade
+)
 
 enum BounceGrade {
 	NONE,
+	MISS,
 	LATE,
 	GOOD,
 	PERFECT
@@ -37,6 +41,7 @@ enum BounceGrade {
 @export_category("Bounce")
 @export_range(0.0, 1.0, 0.05) var bounce_retention: float = 0.75
 @export var bounce_input_window: float = 0.50
+@export var bounce_attempt_window: float = 0.75
 
 @export_category("Bounce Timing")
 @export_range(10.0, 120.0, 1.0) var bounce_permission_angle: float = 70.0
@@ -47,9 +52,11 @@ enum BounceGrade {
 @export_range(45.0, 180.0, 1.0) var bounce_preview_angle: float = 110.0
 
 @export_category("Bounce Feedback")
+@export var bounce_feedback_time: float = 0.25
 @export var bounce_shadow_normal_color: Color = Color("#181818")
 @export var bounce_shadow_ready_color: Color = Color("#5FD4F5")
 @export var bounce_glow_ready_color: Color = Color("#48DFFF")
+@export var bounce_miss_color: Color = Color("#FF5C5C")
 @export var bounce_late_color: Color = Color("#F6C85F")
 @export var bounce_good_color: Color = Color("#72E06A")
 @export var bounce_perfect_color: Color = Color("#B66CFF")
@@ -107,6 +114,8 @@ var is_boosting: bool = false
 var bounce_input_timer: float = 0.0
 var is_bounce_armed: bool = false
 var armed_bounce_grade: BounceGrade = BounceGrade.NONE
+var bounce_feedback_timer: float = 0.0
+var bounce_feedback_grade: BounceGrade = BounceGrade.NONE
 
 var ground_shadow_material: ShaderMaterial
 var rider_shadow_material: ShaderMaterial
@@ -126,6 +135,14 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	bounce_feedback_timer = maxf(
+	bounce_feedback_timer - delta,
+	0.0
+)
+
+	if bounce_feedback_timer <= 0.0:
+		bounce_feedback_grade = BounceGrade.NONE
+	
 	update_bounce_input(delta)
 	handle_jump(delta)
 	apply_gravity(delta)
@@ -362,17 +379,44 @@ func update_bounce_input(delta: float) -> void:
 	)
 
 	if bounce_input_timer <= 0.0:
-		clear_armed_bounce()
+		is_bounce_armed = false
 
 	if not Input.is_action_just_pressed("jump"):
 		return
 
-	if is_on_floor() or not can_arm_bounce():
+	if is_on_floor():
 		return
 
-	armed_bounce_grade = get_bounce_grade()
+	if velocity.y >= 0.0:
+		return
+
+	var time_to_ground: float = (
+		get_estimated_time_to_ground()
+	)
+
+	if time_to_ground > bounce_attempt_window:
+		return
+
+	var grade: BounceGrade = get_bounce_grade()
+
+	if (
+		time_to_ground > bounce_input_window
+		or grade == BounceGrade.NONE
+	):
+		show_bounce_miss()
+		return
+
+	armed_bounce_grade = grade
 	is_bounce_armed = true
 	bounce_input_timer = bounce_input_window
+	
+	start_bounce_feedback(
+		armed_bounce_grade
+	)
+
+	bounce_feedback.emit(
+		armed_bounce_grade
+	)
 
 
 func can_arm_bounce() -> bool:
@@ -459,6 +503,9 @@ func get_bounce_grade_color(
 	grade: BounceGrade
 ) -> Color:
 	match grade:
+		BounceGrade.MISS:
+			return bounce_miss_color
+		
 		BounceGrade.LATE:
 			return bounce_late_color
 
@@ -485,6 +532,16 @@ func is_bounce_preview_active() -> bool:
 	return (
 		get_estimated_time_to_ground()
 		<= bounce_preview_time
+	)
+
+
+func show_bounce_miss() -> void:
+	start_bounce_feedback(
+		BounceGrade.MISS
+	)
+
+	bounce_feedback.emit(
+		BounceGrade.MISS
 	)
 
 
@@ -522,7 +579,12 @@ func update_bounce_glow() -> void:
 	var strength: float = 0.0
 	var glow_color: Color = bounce_glow_ready_color
 
-	if is_bounce_armed:
+	if bounce_feedback_timer > 0.0:
+		strength = 1.0
+		glow_color = get_bounce_grade_color(
+			bounce_feedback_grade
+		)
+	elif is_bounce_armed:
 		strength = 1.0
 		glow_color = get_bounce_grade_color(
 			armed_bounce_grade
@@ -537,6 +599,7 @@ func update_bounce_glow() -> void:
 		"glow_strength",
 		strength
 	)
+
 	bounce_glow_material.set_shader_parameter(
 		"glow_color",
 		glow_color
@@ -550,7 +613,11 @@ func update_ground_shadow_bounce_color() -> void:
 	var shadow_color: Color = bounce_shadow_normal_color
 
 	if ground_shadow_bounce_feedback_enabled:
-		if is_bounce_armed:
+		if bounce_feedback_timer > 0.0:
+			shadow_color = get_bounce_grade_color(
+				bounce_feedback_grade
+			)
+		elif is_bounce_armed:
 			shadow_color = get_bounce_grade_color(
 				armed_bounce_grade
 			)
@@ -580,6 +647,14 @@ func set_ground_shadow_bounce_feedback_enabled(
 			"shadow_color",
 			bounce_shadow_normal_color
 		)
+
+
+func start_bounce_feedback(
+	grade: BounceGrade
+) -> void:
+	bounce_feedback_grade = grade
+	bounce_feedback_timer = bounce_feedback_time
+
 
 #endregion
 
