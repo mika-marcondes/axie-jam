@@ -222,18 +222,8 @@ func reset_combo() -> void:
 
 
 func get_combo_multiplier() -> float:
-	if combo_chain <= 1:
-		return 1.0
-
-	var multiplier: float = (
-		1.0
-		+ float(combo_chain - 1)
-		* scoring.combo_multiplier_step
-	)
-
-	return minf(
-		multiplier,
-		scoring.max_combo_multiplier
+	return float(
+		maxi(combo_chain, 1)
 	)
 
 #endregion

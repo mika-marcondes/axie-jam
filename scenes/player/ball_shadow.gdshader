@@ -2,7 +2,9 @@ shader_type spatial;
 
 render_mode unshaded, blend_mix, depth_draw_never, cull_disabled;
 
-uniform vec3 shadow_color : source_color = vec3(0.0, 0.0, 0.0);
+uniform vec4 shadow_color : source_color = vec4(
+	0.0, 0.0, 0.0, 1.0
+);
 uniform float opacity : hint_range(0.0, 1.0) = 0.45;
 
 void fragment() {
@@ -15,6 +17,6 @@ void fragment() {
 		distance_from_center
 	);
 
-	ALBEDO = shadow_color;
+	ALBEDO = shadow_color.rgb;
 	ALPHA = opacity * mask;
 }

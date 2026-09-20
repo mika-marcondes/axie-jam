@@ -439,6 +439,18 @@ func realign_tricks(delta: float) -> void:
 	apply_trick_rotation()
 
 
+func is_airborne() -> bool:
+	return ball != null and not ball.is_on_floor()
+
+
+func is_diving() -> bool:
+	return absf(air_pitch_angle) > 0.05
+
+
+func is_spin_aligned(window_degrees: float) -> bool:
+	return get_spin_alignment_degrees() <= window_degrees
+
+
 func get_spin_rpm() -> float:
 	return air_spin_velocity / 6.0
 
@@ -465,14 +477,6 @@ func get_best_jump_height() -> float:
 
 func get_rider_shadow_position() -> Vector3:
 	return air_offset_root.global_position
-
-
-func is_airborne() -> bool:
-	return ball != null and not ball.is_on_floor()
-
-
-func is_diving() -> bool:
-	return absf(air_pitch_angle) > 0.05
 
 
 func get_catch_distance() -> float:
@@ -515,3 +519,15 @@ func get_air_movement_direction() -> Vector3:
 		camera_right * input.x
 		+ camera_forward * -input.y
 	).normalized()
+
+
+func get_spin_alignment_degrees() -> float:
+	var wrapped_angle: float = wrapf(
+		air_spin_angle,
+		-PI,
+		PI
+	)
+
+	return absf(
+		rad_to_deg(wrapped_angle)
+	)
