@@ -3,8 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://dmu33tp6gcewx" path="res://scenes/arena/arena.tscn" id="1_3rkf3"]
 [ext_resource type="Script" uid="uid://wn4ndurxalod" path="res://scripts/menu/main_menu_controller.gd" id="1_247la"]
 [ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_nl8w3"]
-[ext_resource type="PackedScene" uid="uid://dmmkfmevp4yaq" path="res://buba.tscn" id="3_hj162"]
+[ext_resource type="PackedScene" uid="uid://dmmkfmevp4yaq" path="res://scenes/buba/buba.tscn" id="3_hj162"]
 [ext_resource type="Script" uid="uid://djiftr1kjllyk" path="res://scripts/ui/tutorial_overlay.gd" id="4_kiqgm"]
+[ext_resource type="PackedScene" uid="uid://c0et3t21sk3vq" path="res://scenes/pomodoro/pomodoro.tscn" id="21_anexq"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
 
@@ -12,8 +13,8 @@
 script = ExtResource("1_247la")
 camera = NodePath("Camera3D")
 name_tag_anchor = NodePath("Stage/CharacterAnchor/NameTagAnchor")
-axie_scenes = Array[PackedScene]([ExtResource("1_nl8w3"), ExtResource("3_hj162")])
-axie_names = Array[String](["Puffy", "Buba"])
+axie_scenes = Array[PackedScene]([ExtResource("1_nl8w3"), ExtResource("3_hj162"), ExtResource("21_anexq")])
+axie_names = Array[String](["Puffy", "Buba", "Pomodoro"])
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=774776655]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5197928, 1.5614364, 2.1736817)

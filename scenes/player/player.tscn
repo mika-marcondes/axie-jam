@@ -1,7 +1,10 @@
 [gd_scene format=3 uid="uid://dveyac02bqln8"]
 
+[ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_8afob"]
 [ext_resource type="Script" uid="uid://dk61bis0ufe0d" path="res://scripts/player/player_controller.gd" id="1_dovo2"]
 [ext_resource type="Shader" uid="uid://bpri5bjevl3ac" path="res://scenes/player/tuck_aura.gdshader" id="2_gmlin"]
+[ext_resource type="PackedScene" uid="uid://dmmkfmevp4yaq" path="res://scenes/buba/buba.tscn" id="3_p47bc"]
+[ext_resource type="PackedScene" uid="uid://c0et3t21sk3vq" path="res://scenes/pomodoro/pomodoro.tscn" id="4_75vfm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0owmy"]
 render_priority = 0
@@ -17,6 +20,7 @@ height = 1.2
 
 [node name="Player" type="CharacterBody3D" unique_id=1086016846]
 script = ExtResource("1_dovo2")
+axie_scenes = Array[PackedScene]([ExtResource("1_8afob"), ExtResource("3_p47bc"), ExtResource("4_75vfm")])
 
 [node name="AirOffsetRoot" type="Node3D" parent="." unique_id=83156629]
 
