@@ -21,7 +21,7 @@ scoring = ExtResource("2_60nno")
 [node name="Arena" parent="." unique_id=1798231292 instance=ExtResource("3_a53xj")]
 arena_width = 80.0
 arena_length = 120.0
-barrier_collision_height = 12.0
+barrier_collision_height = 30.0
 barrier_thickness = 0.4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=372623840]
