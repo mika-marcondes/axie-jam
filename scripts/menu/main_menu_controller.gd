@@ -6,6 +6,9 @@ var contest_scene_path: String = (
 	"res://scenes/contest/contest_greybox.tscn"
 )
 
+@onready var previous_axie_button: Button = (
+	%PreviousAxieButton
+)
 @onready var axie_name_label: Label = %AxieNameLabel
 @onready var next_axie_button: Button = %NextAxieButton
 @onready var play_button: Button = %PlayButton
@@ -31,9 +34,8 @@ var current_axie: Node3D
 	%HowToPlayButton
 )
 
-@onready var character_tag: Control = %CharacterTag
-
 @onready var sandbox_button: Button = %SandboxButton
+
 
 func _ready() -> void:
 	show_selected_axie()
@@ -51,15 +53,15 @@ func _ready() -> void:
 		tutorial_overlay.open
 	)
 
+	previous_axie_button.pressed.connect(
+		_on_previous_axie_pressed
+	)
+
 	next_axie_button.pressed.connect(
 		_on_next_axie_pressed
 	)
 
 	play_button.grab_focus()
-
-
-func _process(_delta: float) -> void:
-	update_character_tag_position()
 
 
 func show_selected_axie() -> void:
@@ -90,6 +92,21 @@ func show_selected_axie() -> void:
 		)
 
 
+
+
+
+func _on_previous_axie_pressed() -> void:
+	if axie_scenes.is_empty():
+		return
+
+	AxieSelection.selected_index = (
+		AxieSelection.selected_index - 1
+		+ axie_scenes.size()
+	) % axie_scenes.size()
+
+	show_selected_axie()
+
+
 func _on_next_axie_pressed() -> void:
 	if axie_scenes.is_empty():
 		return
@@ -99,30 +116,6 @@ func _on_next_axie_pressed() -> void:
 	) % axie_scenes.size()
 
 	show_selected_axie()
-
-
-func update_character_tag_position() -> void:
-	if camera == null or name_tag_anchor == null:
-		return
-
-	if camera.is_position_behind(
-		name_tag_anchor.global_position
-	):
-		character_tag.visible = false
-		return
-
-	character_tag.visible = true
-
-	var screen_position: Vector2 = (
-		camera.unproject_position(
-			name_tag_anchor.global_position
-		)
-	)
-
-	character_tag.position = (
-		screen_position
-		- character_tag.size * 0.5
-	)
 
 
 func _on_play_pressed() -> void:

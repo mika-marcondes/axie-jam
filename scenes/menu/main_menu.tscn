@@ -52,60 +52,64 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14913759, 1.4298029, 0.035
 
 [node name="MenuUI" type="CanvasLayer" parent="." unique_id=1949331780]
 
-[node name="CharacterTag" type="Control" parent="MenuUI" unique_id=828804030]
-unique_name_in_owner = true
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+[node name="MarginContainer" type="MarginContainer" parent="MenuUI" unique_id=855024028]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
 
-[node name="AxieNameLabel" type="Label" parent="MenuUI/CharacterTag" unique_id=121769008]
+[node name="AxieSelector" type="HBoxContainer" parent="MenuUI/MarginContainer" unique_id=2087632707]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/separation = 40
+
+[node name="PreviousAxieButton" type="Button" parent="MenuUI/MarginContainer/AxieSelector" unique_id=133255379]
 unique_name_in_owner = true
-layout_mode = 0
-offset_right = 121.0
-offset_bottom = 55.0
-theme_override_font_sizes/font_size = 48
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "< Previous"
+
+[node name="AxieNameLabel" type="Label" parent="MenuUI/MarginContainer/AxieSelector" unique_id=121769008]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 60
 text = "PUFFY"
 
-[node name="NextAxieButton" type="Button" parent="MenuUI/CharacterTag" unique_id=731610870]
+[node name="NextAxieButton" type="Button" parent="MenuUI/MarginContainer/AxieSelector" unique_id=1246165238]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 164.0
-offset_top = 12.0
-offset_right = 212.0
-offset_bottom = 60.0
-theme_override_font_sizes/font_size = 20
-text = ">"
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Next >"
 
-[node name="MainButtonContainer" type="VBoxContainer" parent="MenuUI" unique_id=1636022564]
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -249.0
-offset_top = -90.0
-offset_bottom = 90.0
-grow_horizontal = 0
-grow_vertical = 2
+[node name="MainButtonContainer" type="VBoxContainer" parent="MenuUI/MarginContainer" unique_id=1636022564]
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = 10
 
-[node name="PlayButton" type="Button" parent="MenuUI/MainButtonContainer" unique_id=1032760141]
+[node name="PlayButton" type="Button" parent="MenuUI/MarginContainer/MainButtonContainer" unique_id=1032760141]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 100
 text = "PLAY"
 
-[node name="HowToPlayButton" type="Button" parent="MenuUI/MainButtonContainer" unique_id=944502327]
+[node name="HowToPlayButton" type="Button" parent="MenuUI/MarginContainer/MainButtonContainer" unique_id=944502327]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "How to play"
 
-[node name="SandboxButton" type="Button" parent="MenuUI/MainButtonContainer" unique_id=1428276803]
+[node name="SandboxButton" type="Button" parent="MenuUI/MarginContainer/MainButtonContainer" unique_id=1428276803]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
@@ -113,6 +117,7 @@ text = "Sandbox"
 
 [node name="TutorialOverlay" type="Control" parent="MenuUI" unique_id=1639707904]
 unique_name_in_owner = true
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
