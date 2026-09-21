@@ -63,6 +63,9 @@ func _ready() -> void:
 	result_overlay.visible = false
 	
 	if contest != null:
+		if contest.is_sandbox():
+			setup_sandbox_hud()
+		
 		contest.progress_changed.connect(
 			_on_contest_progress_changed
 		)
@@ -213,6 +216,15 @@ func update_combo_score(
 	)
 
 
+func setup_sandbox_hud() -> void:
+	time_label.text = "SANDBOX"
+
+	appeal_label.text = (
+		"APPEAL  %d"
+		% performance.total_appeal
+	)
+
+
 func cancel_bank_display_for_new_combo() -> void:
 	if not showing_bank_result:
 		return
@@ -355,6 +367,13 @@ func clear_combo_display() -> void:
 func _on_appeal_changed(
 	value: int
 ) -> void:
+	if contest != null and contest.is_sandbox():
+		appeal_label.text = (
+			"APPEAL  %d"
+			% value
+		)
+		return
+
 	if contest != null:
 		_on_contest_progress_changed(
 			value,
@@ -362,7 +381,10 @@ func _on_appeal_changed(
 		)
 		return
 
-	appeal_label.text = "APPEAL  %d" % value
+	appeal_label.text = (
+		"APPEAL  %d"
+		% value
+	)
 
 
 func _on_combo_changed(

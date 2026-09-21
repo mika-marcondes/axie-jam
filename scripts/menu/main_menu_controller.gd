@@ -23,11 +23,17 @@ var contest_scene_path: String = (
 
 @onready var character_tag: Control = %CharacterTag
 
+@onready var sandbox_button: Button = %SandboxButton
+
 func _ready() -> void:
 	axie_name_label.text = "PUFFY"
 
 	play_button.pressed.connect(
 		_on_play_pressed
+	)
+	
+	sandbox_button.pressed.connect(
+		_on_sandbox_pressed
 	)
 
 	how_to_play_button.pressed.connect(
@@ -70,6 +76,20 @@ func update_character_tag_position() -> void:
 
 
 func _on_play_pressed() -> void:
+	ContestController.requested_mode = (
+		ContestController.RunMode.STANDARD
+	)
+
+	get_tree().change_scene_to_file(
+		contest_scene_path
+	)
+
+
+func _on_sandbox_pressed() -> void:
+	ContestController.requested_mode = (
+		ContestController.RunMode.SANDBOX
+	)
+
 	get_tree().change_scene_to_file(
 		contest_scene_path
 	)

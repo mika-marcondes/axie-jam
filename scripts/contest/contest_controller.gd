@@ -1,6 +1,13 @@
 extends Node
 class_name ContestController
 
+enum RunMode {
+	STANDARD,
+	SANDBOX
+}
+
+static var requested_mode: RunMode = RunMode.STANDARD
+
 signal progress_changed(
 	current_appeal: int,
 	target_appeal: int
@@ -28,6 +35,7 @@ signal run_failed(
 
 @export_category("References")
 @export var performance: PerformanceController
+@export var dev_ui: CanvasLayer
 
 @export_category("Timing")
 @export var spotlight_duration: float = 60.0
@@ -49,6 +57,7 @@ var time_remaining: float = 0.0
 var is_running: bool = false
 var is_overtime: bool = false
 
+var run_mode: RunMode = RunMode.STANDARD
 
 #region Lifecycle
 
@@ -63,7 +72,12 @@ func _ready() -> void:
 		_on_appeal_changed
 	)
 
-	start_run()
+	run_mode = requested_mode
+
+	if run_mode == RunMode.SANDBOX:
+		start_sandbox()
+	else:
+		start_run()
 
 
 func _process(delta: float) -> void:
@@ -101,8 +115,20 @@ func start_run() -> void:
 	is_running = true
 	is_overtime = false
 
+	if dev_ui != null:
+		dev_ui.visible = false
+
 	reset_timer()
 	emit_contest_state()
+
+
+func start_sandbox() -> void:
+	is_running = false
+	is_overtime = false
+	time_remaining = 0.0
+
+	if dev_ui != null:
+		dev_ui.visible = true
 
 
 func reset_timer() -> void:
@@ -176,6 +202,10 @@ func fail_run() -> void:
 		performance.total_appeal,
 		spotlights_cleared
 	)
+
+
+func is_sandbox() -> bool:
+	return run_mode == RunMode.SANDBOX
 
 #endregion
 
