@@ -38,6 +38,12 @@ extends CanvasLayer
 @onready var speed_label: Label = %SpeedLabel
 @onready var rpm_label: Label = %RPMLabel
 
+@onready var result_overlay: Control = %ResultOverlay
+@onready var result_title_label: Label = %ResultTitleLabel
+@onready var result_appeal_label: Label = %ResultAppealLabel
+@onready var result_spotlights_label: Label = %ResultSpotlightsLabel
+@onready var retry_button: Button = %RetryButton
+
 var trick_segments: Array[String] = []
 
 var current_spin_family: String = ""
@@ -52,6 +58,10 @@ var spotlight_feedback_revision: int = 0
 #region Lifecycle
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	result_overlay.visible = false
+	
 	if contest != null:
 		contest.progress_changed.connect(
 			_on_contest_progress_changed
@@ -63,6 +73,14 @@ func _ready() -> void:
 
 		contest.spotlight_cleared.connect(
 			_on_spotlight_cleared
+		)
+
+		contest.run_failed.connect(
+			_on_run_failed
+		)
+
+		retry_button.pressed.connect(
+			_on_retry_pressed
 		)
 	
 	if performance == null:
@@ -549,5 +567,33 @@ func _on_spotlight_cleared(
 		return
 
 	spotlight_feedback_label.visible = false
+
+
+func _on_run_failed(
+	final_appeal: int,
+	spotlights_cleared: int
+) -> void:
+	result_title_label.text = "TIME'S UP!"
+
+	result_appeal_label.text = (
+		"APPEAL  %d"
+		% final_appeal
+	)
+
+	result_spotlights_label.text = (
+		"SPOTLIGHTS CLEARED  %d"
+		% spotlights_cleared
+	)
+
+	result_overlay.visible = true
+
+	get_tree().paused = true
+
+	retry_button.grab_focus()
+
+
+func _on_retry_pressed() -> void:
+	get_tree().paused = false
+	get_tree().reload_current_scene()
 
 #endregion

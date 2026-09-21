@@ -46,6 +46,7 @@ rider_shadow_max_scale = 0.6
 [node name="CameraRig" type="Node3D" parent="." unique_id=215474228 node_paths=PackedStringArray("target")]
 script = ExtResource("4_aps6a")
 target = NodePath("../Ball")
+auto_follow_speed = 1.0
 
 [node name="YawPivot" type="Node3D" parent="CameraRig" unique_id=513869149]
 
@@ -54,6 +55,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 5)
 current = true
 
 [node name="DevUI" parent="." unique_id=1027784577 node_paths=PackedStringArray("ball", "player") instance=ExtResource("5_dc481")]
+visible = false
 ball = NodePath("../Ball")
 player = NodePath("../Player")
 
@@ -68,4 +70,3 @@ spotlight_feedback_color = Color(0.7137255, 0.42352942, 1, 1)
 [node name="ContestController" type="Node" parent="." unique_id=2051787638 node_paths=PackedStringArray("performance")]
 script = ExtResource("10_a53xj")
 performance = NodePath("..")
-spotlight_duration = 30.0

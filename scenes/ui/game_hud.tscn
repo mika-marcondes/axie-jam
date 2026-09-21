@@ -2,6 +2,72 @@
 
 [node name="GameHud" type="CanvasLayer" unique_id=168603079]
 
+[node name="ResultOverlay" type="Control" parent="." unique_id=826044752]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="ResultOverlay" unique_id=1392243147]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5882353)
+
+[node name="CenterContainer" type="CenterContainer" parent="ResultOverlay" unique_id=1638980262]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultOverlay/CenterContainer" unique_id=1547234754]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="ResultTitleLabel" type="Label" parent="ResultOverlay/CenterContainer/VBoxContainer" unique_id=1173136172]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+text = "Result"
+horizontal_alignment = 1
+
+[node name="ResultAppealLabel" type="Label" parent="ResultOverlay/CenterContainer/VBoxContainer" unique_id=1306778324]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 28
+text = "Result Appeal"
+
+[node name="ResultSpotlightsLabel" type="Label" parent="ResultOverlay/CenterContainer/VBoxContainer" unique_id=15416243]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 28
+text = "Result Spotlight"
+
+[node name="RetryButton" type="Button" parent="ResultOverlay/CenterContainer/VBoxContainer" unique_id=1330719287]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 48
+text = "Retry"
+
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=4433029]
 anchors_preset = 10
 anchor_right = 1.0
@@ -42,6 +108,14 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_constants/separation = -4
 
+[node name="TrickLineLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1249707650]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
 [node name="ComboLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=567344560]
 unique_name_in_owner = true
 layout_mode = 2
@@ -49,14 +123,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 28
 text = "Combo"
-horizontal_alignment = 1
-
-[node name="TrickLineLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1249707650]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 
 [node name="BounceFeedbackLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1474827103]
