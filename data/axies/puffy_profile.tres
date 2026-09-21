@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="AxieControlProfile" format=3 uid="uid://tm6knvx4vsvo"]
+
+[ext_resource type="Script" uid="uid://dpvrv0vhkncd0" path="res://scripts/player/axie_control_profile.gd" id="1_waa4p"]
+
+[resource]
+script = ExtResource("1_waa4p")
+display_name = "PUFFY"
+trait_summary = "Balanced"

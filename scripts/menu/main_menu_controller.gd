@@ -36,15 +36,20 @@ var current_axie: Node3D
 
 @onready var sandbox_button: Button = %SandboxButton
 
+@export var axie_profiles: Array[AxieControlProfile] = []
+
+@onready var axie_trait_label: Label = (
+	%AxieTraitLabel
+)
+
 
 func _ready() -> void:
 	show_selected_axie()
-	axie_name_label.text = "PUFFY"
 
 	play_button.pressed.connect(
 		_on_play_pressed
 	)
-	
+
 	sandbox_button.pressed.connect(
 		_on_sandbox_pressed
 	)
@@ -86,13 +91,27 @@ func show_selected_axie() -> void:
 		current_axie
 	)
 
+	if index < axie_profiles.size():
+		var profile: AxieControlProfile = (
+			axie_profiles[index]
+		)
+
+		if profile != null:
+			axie_name_label.text = (
+				profile.display_name.to_upper()
+			)
+
+			axie_trait_label.text = (
+				profile.trait_summary
+			)
+			return
+
 	if index < axie_names.size():
 		axie_name_label.text = (
 			axie_names[index].to_upper()
 		)
 
-
-
+	axie_trait_label.text = ""
 
 
 func _on_previous_axie_pressed() -> void:

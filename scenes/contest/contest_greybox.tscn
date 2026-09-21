@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://c1b08joeg3760" path="res://scenes/ui/game_hud.tscn" id="7_svnmd"]
 [ext_resource type="Script" uid="uid://dmy68q5dp3wup" path="res://scripts/ui/game_hud.gd" id="8_60nno"]
 [ext_resource type="Script" uid="uid://c5cnvd0jwqgwj" path="res://scripts/contest/contest_controller.gd" id="10_a53xj"]
+[ext_resource type="Script" uid="uid://pvuiepnurwui" path="res://scripts/ui/pause_menu.gd" id="11_2cf0a"]
 
 [node name="ContestGreybox" type="Node3D" unique_id=1564593338 node_paths=PackedStringArray("ball", "player")]
 script = ExtResource("1_3ppnf")
@@ -56,6 +57,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 5)
 current = true
 
 [node name="DevUI" parent="." unique_id=1027784577 node_paths=PackedStringArray("ball", "player") instance=ExtResource("5_dc481")]
+visible = false
 ball = NodePath("../Ball")
 player = NodePath("../Player")
 
@@ -71,3 +73,114 @@ spotlight_feedback_color = Color(0.7137255, 0.42352942, 1, 1)
 script = ExtResource("10_a53xj")
 performance = NodePath("..")
 dev_ui = NodePath("../DevUI")
+
+[node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1730234106]
+script = ExtResource("11_2cf0a")
+
+[node name="PauseRoot" type="Control" parent="PauseMenu" unique_id=785693044]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="PauseMenu/PauseRoot" unique_id=543387483]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.27450982)
+
+[node name="CenterContainer" type="CenterContainer" parent="PauseMenu/PauseRoot" unique_id=1569787972]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PausePanel" type="PanelContainer" parent="PauseMenu/PauseRoot/CenterContainer" unique_id=26353415]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel" unique_id=581549825]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer" unique_id=1840142747]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer" unique_id=1621394259]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 28
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer" unique_id=1818336844]
+layout_mode = 2
+
+[node name="ContentRow" type="HBoxContainer" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer" unique_id=1997823273]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="MenuButtons" type="VBoxContainer" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow" unique_id=1396330007]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow/MenuButtons" unique_id=319183547]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Continue"
+
+[node name="RestartButton" type="Button" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow/MenuButtons" unique_id=1641246736]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Restart"
+
+[node name="MainMenuButton" type="Button" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow/MenuButtons" unique_id=223924209]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Return"
+
+[node name="VSeparator" type="VSeparator" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow" unique_id=169125256]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow" unique_id=1854750769]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="ControlsTitle" type="Label" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow/VBoxContainer" unique_id=1998815678]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "Controls"
+horizontal_alignment = 1
+
+[node name="ControlsText" type="RichTextLabel" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer/ContentRow/VBoxContainer" unique_id=822257338]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_font_size = 18
+text = "Body"
+fit_content = true
+
+[node name="PauseHint" type="Label" parent="PauseMenu/PauseRoot/CenterContainer/PausePanel/MarginContainer/VBoxContainer" unique_id=960641397]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Press [ ] to continue"
+horizontal_alignment = 1

@@ -49,6 +49,7 @@ var air_offset: Vector3 = Vector3.ZERO
 
 @export_category("Axies")
 @export var axie_scenes: Array[PackedScene] = []
+@export var axie_profiles: Array[AxieControlProfile] = []
 
 @onready var axie_slot: Node3D = (
 	$AirOffsetRoot/TrickPivot/ContactRoot/VisualRoot/AxieSlot
@@ -137,6 +138,14 @@ func setup_selected_axie() -> void:
 		axie_scenes[index].instantiate()
 		as Node3D
 	)
+
+	if index < axie_profiles.size():
+		var profile: AxieControlProfile = (
+			axie_profiles[index]
+		)
+
+		if profile != null:
+			apply_control_profile(profile)
 
 	axie_slot.add_child(
 		axie_visual
@@ -428,6 +437,43 @@ func update_air_motion_visuals(delta: float) -> void:
 		contact_root.rotation.z,
 		target_roll,
 		weight
+	)
+
+
+func apply_control_profile(
+	profile: AxieControlProfile
+) -> void:
+	if ball != null:
+		ball.acceleration *= (
+			profile.acceleration_multiplier
+		)
+
+		ball.max_speed *= (
+			profile.max_speed_multiplier
+		)
+
+		ball.steering *= (
+			profile.steering_multiplier
+		)
+
+		ball.jump_velocity *= (
+			profile.jump_multiplier
+		)
+
+		ball.charged_jump_velocity *= (
+			profile.jump_multiplier
+		)
+
+		ball.air_control *= (
+			profile.air_control_multiplier
+		)
+
+	spin_acceleration *= (
+		profile.spin_acceleration_multiplier
+	)
+
+	max_spin_speed *= (
+		profile.max_spin_speed_multiplier
 	)
 
 

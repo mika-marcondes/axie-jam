@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AxieControlProfile" format=3 uid="uid://kbjj23cvqatm"]
+
+[ext_resource type="Script" uid="uid://dpvrv0vhkncd0" path="res://scripts/player/axie_control_profile.gd" id="1_63u81"]
+
+[resource]
+script = ExtResource("1_63u81")
+display_name = "POMODORO"
+trait_summary = "++ Air Control      ++ Jump      - Speed"
+acceleration_multiplier = 0.95
+max_speed_multiplier = 1.1400000000000001
+steering_multiplier = 1.05
+jump_multiplier = 1.4
+air_control_multiplier = 1.35

@@ -5,6 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_nl8w3"]
 [ext_resource type="PackedScene" uid="uid://dmmkfmevp4yaq" path="res://scenes/buba/buba.tscn" id="3_hj162"]
 [ext_resource type="Script" uid="uid://djiftr1kjllyk" path="res://scripts/ui/tutorial_overlay.gd" id="4_kiqgm"]
+[ext_resource type="Script" uid="uid://dpvrv0vhkncd0" path="res://scripts/player/axie_control_profile.gd" id="5_1k4da"]
+[ext_resource type="Resource" uid="uid://tm6knvx4vsvo" path="res://data/axies/puffy_profile.tres" id="6_bbqo6"]
+[ext_resource type="Resource" uid="uid://b8bm0xyowamww" path="res://data/axies/buba_profile.tres" id="7_d4hu8"]
+[ext_resource type="Resource" uid="uid://kbjj23cvqatm" path="res://data/axies/pomodoro_profile.tres" id="8_p1nwe"]
 [ext_resource type="PackedScene" uid="uid://c0et3t21sk3vq" path="res://scenes/pomodoro/pomodoro.tscn" id="21_anexq"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
@@ -15,9 +19,10 @@ camera = NodePath("Camera3D")
 name_tag_anchor = NodePath("Stage/CharacterAnchor/NameTagAnchor")
 axie_scenes = Array[PackedScene]([ExtResource("1_nl8w3"), ExtResource("3_hj162"), ExtResource("21_anexq")])
 axie_names = Array[String](["Puffy", "Buba", "Pomodoro"])
+axie_profiles = Array[ExtResource("5_1k4da")]([ExtResource("6_bbqo6"), ExtResource("7_d4hu8"), ExtResource("8_p1nwe")])
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=774776655]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5197928, 1.5614364, 2.1736817)
+transform = Transform3D(0.99566823, 0, -0.09297715, 0, 1, 0, 0.09297715, 0, 0.99566823, 0.43235627, 1.6186461, 2.0556426)
 fov = 45.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1168195928]
@@ -63,20 +68,23 @@ theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
 
-[node name="AxieSelector" type="HBoxContainer" parent="MenuUI/MarginContainer" unique_id=2087632707]
+[node name="MarginContainer" type="VBoxContainer" parent="MenuUI/MarginContainer" unique_id=829548508]
+layout_mode = 2
+
+[node name="AxieSelector" type="HBoxContainer" parent="MenuUI/MarginContainer/MarginContainer" unique_id=2087632707]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/separation = 40
 
-[node name="PreviousAxieButton" type="Button" parent="MenuUI/MarginContainer/AxieSelector" unique_id=133255379]
+[node name="PreviousAxieButton" type="Button" parent="MenuUI/MarginContainer/MarginContainer/AxieSelector" unique_id=133255379]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "< Previous"
 
-[node name="AxieNameLabel" type="Label" parent="MenuUI/MarginContainer/AxieSelector" unique_id=121769008]
+[node name="AxieNameLabel" type="Label" parent="MenuUI/MarginContainer/MarginContainer/AxieSelector" unique_id=121769008]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -84,11 +92,20 @@ theme_override_constants/outline_size = 20
 theme_override_font_sizes/font_size = 60
 text = "PUFFY"
 
-[node name="NextAxieButton" type="Button" parent="MenuUI/MarginContainer/AxieSelector" unique_id=1246165238]
+[node name="NextAxieButton" type="Button" parent="MenuUI/MarginContainer/MarginContainer/AxieSelector" unique_id=1246165238]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Next >"
+
+[node name="AxieTraitLabel" type="Label" parent="MenuUI/MarginContainer/MarginContainer" unique_id=596162226]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 14
+theme_override_font_sizes/font_size = 30
+text = "Trait label"
+horizontal_alignment = 1
 
 [node name="MainButtonContainer" type="VBoxContainer" parent="MenuUI/MarginContainer" unique_id=1636022564]
 custom_minimum_size = Vector2(340, 0)
@@ -100,6 +117,8 @@ theme_override_constants/separation = 10
 [node name="PlayButton" type="Button" parent="MenuUI/MarginContainer/MainButtonContainer" unique_id=1032760141]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 30
 theme_override_font_sizes/font_size = 100
 text = "PLAY"
 

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AxieControlProfile" format=3 uid="uid://b8bm0xyowamww"]
+
+[ext_resource type="Script" uid="uid://dpvrv0vhkncd0" path="res://scripts/player/axie_control_profile.gd" id="1_22h00"]
+
+[resource]
+script = ExtResource("1_22h00")
+display_name = "BUBA"
+trait_summary = "++ Speed      + Jump      -- Air Control"
+acceleration_multiplier = 1.15
+max_speed_multiplier = 1.3
+steering_multiplier = 0.95
+jump_multiplier = 1.15
+air_control_multiplier = 0.72
