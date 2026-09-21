@@ -17,33 +17,37 @@ size = Vector3(20, 0.25, 30)
 size = Vector3(20, 0.25, 30)
 
 [sub_resource type="BoxMesh" id="BoxMesh_n62jo"]
-size = Vector3(20.4, 1, 0.2)
+size = Vector3(20.4, 2, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1qjuf"]
-size = Vector3(20.4, 1, 0.2)
+size = Vector3(20.4, 12, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8trdl"]
-size = Vector3(20.4, 1, 0.2)
+size = Vector3(20.4, 2, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5tue2"]
-size = Vector3(20.4, 1, 0.2)
+size = Vector3(20.4, 12, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_aj7ud"]
-size = Vector3(0.2, 1, 30.4)
+size = Vector3(0.2, 2, 30.4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_asdgj"]
-size = Vector3(0.2, 1, 30.4)
+size = Vector3(0.2, 12, 30.4)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_247la"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_dbjuf"]
-size = Vector3(0.2, 1, 30.4)
+size = Vector3(0.2, 2, 30.4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_brmbs"]
-size = Vector3(0.2, 1, 30.4)
+size = Vector3(0.2, 12, 30.4)
 
 [node name="Arena" type="Node3D" unique_id=1798231292]
 script = ExtResource("1_1qjuf")
 arena_width = 20.0
 arena_length = 30.0
+barrier_height = 1.0
+barrier_collision_height = null
 barrier_thickness = 0.2
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1199269271]
@@ -89,6 +93,7 @@ shape = SubResource("BoxShape3D_asdgj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1, 0.5, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Barriers/West" unique_id=667535528]
+material_override = SubResource("ShaderMaterial_247la")
 mesh = SubResource("BoxMesh_dbjuf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/West" unique_id=470105279]

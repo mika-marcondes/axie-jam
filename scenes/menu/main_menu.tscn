@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dmu33tp6gcewx" path="res://scenes/arena/arena.tscn" id="1_3rkf3"]
 [ext_resource type="Script" uid="uid://wn4ndurxalod" path="res://scripts/menu/main_menu_controller.gd" id="1_247la"]
 [ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_nl8w3"]
+[ext_resource type="Script" uid="uid://djiftr1kjllyk" path="res://scripts/ui/tutorial_overlay.gd" id="4_kiqgm"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
 
@@ -25,6 +26,7 @@ visible = false
 
 [node name="Arena" parent="Stage" unique_id=1798231292 instance=ExtResource("1_3rkf3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48948622, 0)
+barrier_collision_height = 12.0
 
 [node name="BallDisplay" type="MeshInstance3D" parent="Stage" unique_id=325312004]
 transform = Transform3D(0.98480767, 0, 0.17364816, 0, 1, 0, -0.17364816, 0, 0.98480767, 0, 0.5, 0)
@@ -69,18 +71,108 @@ offset_bottom = 60.0
 theme_override_font_sizes/font_size = 20
 text = ">"
 
-[node name="PlayButton" type="Button" parent="MenuUI" unique_id=1032760141]
-unique_name_in_owner = true
+[node name="MainButtonContainer" type="VBoxContainer" parent="MenuUI" unique_id=1636022564]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -460.0
-offset_top = -72.5
-offset_right = -99.0
-offset_bottom = 72.5
+offset_left = -249.0
+offset_top = -90.0
+offset_bottom = 90.0
 grow_horizontal = 0
 grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="MenuUI/MainButtonContainer" unique_id=1032760141]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_font_sizes/font_size = 100
 text = "PLAY"
+
+[node name="HowToPlayButton" type="Button" parent="MenuUI/MainButtonContainer" unique_id=944502327]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "How to play"
+
+[node name="SandboxButton" type="Button" parent="MenuUI/MainButtonContainer" unique_id=1428276803]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Sandbox"
+
+[node name="TutorialOverlay" type="Control" parent="MenuUI" unique_id=1639707904]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_kiqgm")
+
+[node name="Background" type="ColorRect" parent="MenuUI/TutorialOverlay" unique_id=1103333288]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.19, 0.19, 0.19, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="MenuUI/TutorialOverlay" unique_id=1446771123]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TutorialPanel" type="PanelContainer" parent="MenuUI/TutorialOverlay/CenterContainer" unique_id=660235898]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel" unique_id=463373328]
+layout_mode = 2
+
+[node name="PageLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=551004673]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Page"
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=1424204389]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Title"
+horizontal_alignment = 1
+
+[node name="BodyLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=1238311286]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Body"
+horizontal_alignment = 1
+
+[node name="NavigationRow" type="HBoxContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=838095638]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="BackButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer/NavigationRow" unique_id=2018711761]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "BACK"
+
+[node name="CloseButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer/NavigationRow" unique_id=829942286]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "CLOSE"
+
+[node name="NextButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer/NavigationRow" unique_id=377581422]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Next"

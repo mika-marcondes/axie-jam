@@ -13,6 +13,13 @@ var contest_scene_path: String = (
 @export_category("References")
 @export var camera: Camera3D
 @export var name_tag_anchor: Marker3D
+@onready var tutorial_overlay: TutorialOverlay = (
+	%TutorialOverlay
+)
+
+@onready var how_to_play_button: Button = (
+	%HowToPlayButton
+)
 
 @onready var character_tag: Control = %CharacterTag
 
@@ -21,6 +28,10 @@ func _ready() -> void:
 
 	play_button.pressed.connect(
 		_on_play_pressed
+	)
+
+	how_to_play_button.pressed.connect(
+		tutorial_overlay.open
 	)
 
 	next_axie_button.pressed.connect(
