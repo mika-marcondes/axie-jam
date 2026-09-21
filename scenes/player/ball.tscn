@@ -1,17 +1,25 @@
 [gd_scene format=3 uid="uid://diill28ak0gww"]
 
 [ext_resource type="Script" uid="uid://cpndixow04ijj" path="res://scripts/player/ball_controller.gd" id="1_jxf6l"]
-[ext_resource type="Shader" uid="uid://ce5wwmpkopvmh" path="res://scenes/player/ball.gdshader" id="2_jxcsf"]
+[ext_resource type="Shader" uid="uid://cqfinnt5pcpji" path="res://shaders/ball/ball_visual.gdshader" id="2_gw4ti"]
 [ext_resource type="Shader" uid="uid://detpkt7evo5bu" path="res://scenes/player/ball_shadow.gdshader" id="3_8x03u"]
 [ext_resource type="Shader" uid="uid://ciiiwvw75cw2c" path="res://shaders/ball/bounce_glow.gdshader" id="3_cladr"]
 [ext_resource type="Shader" uid="uid://cec5qvfii57nj" path="res://shaders/ball/ball_rider_shadow.gdshader" id="5_gw4ti"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r5vmv"]
 render_priority = 0
-shader = ExtResource("2_jxcsf")
-shader_parameter/color_a = Color(0.95, 0.342, 0.342, 1)
-shader_parameter/color_b = Color(0.63, 0.10710001, 0.22910988, 1)
-shader_parameter/checker_scale = 8.0
+shader = ExtResource("2_gw4ti")
+shader_parameter/white_color = Color(0.95, 0.780425, 0.3515, 1)
+shader_parameter/orange_color = Color(1, 0.3, 0.05, 1)
+shader_parameter/light_orange_color = Color(1, 0.58, 0.16, 1)
+shader_parameter/dark_orange_color = Color(0.85, 0.16, 0.03, 1)
+shader_parameter/band_top = 0.34
+shader_parameter/band_bottom = 0.68
+shader_parameter/triangle_count = 4.0
+shader_parameter/triangle_strength = 0.9
+shader_parameter/bottom_accent_start = 0.88
+shader_parameter/roughness = 0.42
+shader_parameter/specular_amount = 0.55
 
 [sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
 material = SubResource("ShaderMaterial_r5vmv")

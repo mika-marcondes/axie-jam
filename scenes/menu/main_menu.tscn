@@ -9,9 +9,26 @@
 [ext_resource type="Resource" uid="uid://tm6knvx4vsvo" path="res://data/axies/puffy_profile.tres" id="6_bbqo6"]
 [ext_resource type="Resource" uid="uid://b8bm0xyowamww" path="res://data/axies/buba_profile.tres" id="7_d4hu8"]
 [ext_resource type="Resource" uid="uid://kbjj23cvqatm" path="res://data/axies/pomodoro_profile.tres" id="8_p1nwe"]
+[ext_resource type="Shader" uid="uid://cqfinnt5pcpji" path="res://shaders/ball/ball_visual.gdshader" id="10_bbqo6"]
 [ext_resource type="PackedScene" uid="uid://c0et3t21sk3vq" path="res://scenes/pomodoro/pomodoro.tscn" id="21_anexq"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gw4ti"]
+render_priority = 0
+shader = ExtResource("10_bbqo6")
+shader_parameter/white_color = Color(0.9490196, 0.78039217, 0.3529412, 1)
+shader_parameter/orange_color = Color(1, 0.3, 0.05, 1)
+shader_parameter/light_orange_color = Color(1, 0.58, 0.16, 1)
+shader_parameter/dark_orange_color = Color(0.85, 0.16, 0.03, 1)
+shader_parameter/band_top = 0.34
+shader_parameter/band_bottom = 0.68
+shader_parameter/triangle_count = 4.0
+shader_parameter/triangle_strength = 0.9
+shader_parameter/bottom_accent_start = 0.88
+shader_parameter/roughness = 0.42
+shader_parameter/specular_amount = 0.55
+
 [sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
+material = SubResource("ShaderMaterial_gw4ti")
 
 [node name="MainMenu" type="Node3D" unique_id=719062586 node_paths=PackedStringArray("camera", "name_tag_anchor")]
 script = ExtResource("1_247la")
