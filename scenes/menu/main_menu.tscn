@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://hcvhb0vqndhr"]
+
+[ext_resource type="PackedScene" uid="uid://dmu33tp6gcewx" path="res://scenes/arena/arena.tscn" id="1_3rkf3"]
+[ext_resource type="Script" uid="uid://wn4ndurxalod" path="res://scripts/menu/main_menu_controller.gd" id="1_247la"]
+[ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_nl8w3"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_brmbs"]
+
+[node name="MainMenu" type="Node3D" unique_id=719062586 node_paths=PackedStringArray("camera", "name_tag_anchor")]
+script = ExtResource("1_247la")
+camera = NodePath("Camera3D")
+name_tag_anchor = NodePath("Stage/CharacterAnchor/NameTagAnchor")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=774776655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5197928, 1.5614364, 2.1736817)
+fov = 45.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1168195928]
+visible = false
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1215541921]
+visible = false
+
+[node name="Stage" type="Node3D" parent="." unique_id=2008299108]
+
+[node name="Arena" parent="Stage" unique_id=1798231292 instance=ExtResource("1_3rkf3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48948622, 0)
+
+[node name="BallDisplay" type="MeshInstance3D" parent="Stage" unique_id=325312004]
+transform = Transform3D(0.98480767, 0, 0.17364816, 0, 1, 0, -0.17364816, 0, 0.98480767, 0, 0.5, 0)
+mesh = SubResource("SphereMesh_brmbs")
+
+[node name="CharacterAnchor" type="Node3D" parent="Stage" unique_id=1661059526]
+transform = Transform3D(0.98480767, 0, 0.17364816, 0, 1, 0, -0.17364816, 0, 0.98480767, -0.030232806, 0.87384546, -0.17145877)
+
+[node name="PlayerDisplay" parent="Stage/CharacterAnchor" unique_id=498883129 instance=ExtResource("1_nl8w3")]
+
+[node name="NameTagAnchor" type="Marker3D" parent="Stage/CharacterAnchor" unique_id=924861029]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14913759, 1.4298029, 0.03557066)
+
+[node name="MenuUI" type="CanvasLayer" parent="." unique_id=1949331780]
+
+[node name="CharacterTag" type="Control" parent="MenuUI" unique_id=828804030]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AxieNameLabel" type="Label" parent="MenuUI/CharacterTag" unique_id=121769008]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 121.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 48
+text = "PUFFY"
+
+[node name="NextAxieButton" type="Button" parent="MenuUI/CharacterTag" unique_id=731610870]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 164.0
+offset_top = 12.0
+offset_right = 212.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 20
+text = ">"
+
+[node name="PlayButton" type="Button" parent="MenuUI" unique_id=1032760141]
+unique_name_in_owner = true
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -460.0
+offset_top = -72.5
+offset_right = -99.0
+offset_bottom = 72.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 100
+text = "PLAY"
