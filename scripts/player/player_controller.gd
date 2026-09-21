@@ -47,9 +47,15 @@ var air_offset: Vector3 = Vector3.ZERO
 @export_category("Debug Tracking")
 @export var jump_height_threshold: float = 0.05
 
-@onready var axie_animator: AxieAnimationController = (
-	$AirOffsetRoot/TrickPivot/ContactRoot/VisualRoot/Puffy/Animator
+@export_category("Axies")
+@export var axie_scenes: Array[PackedScene] = []
+
+@onready var axie_slot: Node3D = (
+	$AirOffsetRoot/TrickPivot/ContactRoot/VisualRoot/AxieSlot
 )
+
+var axie_visual: Node3D
+var axie_animator: AxieAnimationController
 
 @export_category("Visual Contact")
 @export var grounded_contact_offset: float = 0.03
@@ -96,17 +102,54 @@ func _physics_process(delta: float) -> void:
 
 
 func _ready() -> void:
+	setup_selected_axie()
+
 	if tuck_aura.material_override is ShaderMaterial:
 		tuck_aura_material = (
 			tuck_aura.material_override.duplicate()
 			as ShaderMaterial
 		)
-		tuck_aura.material_override = tuck_aura_material
+
+		tuck_aura.material_override = (
+			tuck_aura_material
+		)
 
 	tuck_aura.visible = false
 
 	if axie_animator != null:
-		axie_animator.setup(self, ball)
+		axie_animator.setup(
+			self,
+			ball
+		)
+
+
+func setup_selected_axie() -> void:
+	if axie_scenes.is_empty():
+		return
+
+	var index: int = clampi(
+		AxieSelection.selected_index,
+		0,
+		axie_scenes.size() - 1
+	)
+
+	axie_visual = (
+		axie_scenes[index].instantiate()
+		as Node3D
+	)
+
+	axie_slot.add_child(
+		axie_visual
+	)
+
+	axie_animator = (
+		axie_visual.find_child(
+			"Animator",
+			true,
+			false
+		)
+		as AxieAnimationController
+	)
 
 
 func follow_ball() -> void:

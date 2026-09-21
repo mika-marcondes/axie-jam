@@ -17,6 +17,16 @@ var contest_scene_path: String = (
 	%TutorialOverlay
 )
 
+@export_category("Axies")
+@export var axie_scenes: Array[PackedScene] = []
+@export var axie_names: Array[String] = []
+
+@onready var axie_slot: Node3D = (
+	$Stage/CharacterAnchor/AxieSlot
+)
+
+var current_axie: Node3D
+
 @onready var how_to_play_button: Button = (
 	%HowToPlayButton
 )
@@ -26,6 +36,7 @@ var contest_scene_path: String = (
 @onready var sandbox_button: Button = %SandboxButton
 
 func _ready() -> void:
+	show_selected_axie()
 	axie_name_label.text = "PUFFY"
 
 	play_button.pressed.connect(
@@ -49,6 +60,45 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	update_character_tag_position()
+
+
+func show_selected_axie() -> void:
+	if axie_scenes.is_empty():
+		return
+
+	if current_axie != null:
+		current_axie.queue_free()
+
+	var index: int = clampi(
+		AxieSelection.selected_index,
+		0,
+		axie_scenes.size() - 1
+	)
+
+	current_axie = (
+		axie_scenes[index].instantiate()
+		as Node3D
+	)
+
+	axie_slot.add_child(
+		current_axie
+	)
+
+	if index < axie_names.size():
+		axie_name_label.text = (
+			axie_names[index].to_upper()
+		)
+
+
+func _on_next_axie_pressed() -> void:
+	if axie_scenes.is_empty():
+		return
+
+	AxieSelection.selected_index = (
+		AxieSelection.selected_index + 1
+	) % axie_scenes.size()
+
+	show_selected_axie()
 
 
 func update_character_tag_position() -> void:
@@ -93,7 +143,3 @@ func _on_sandbox_pressed() -> void:
 	get_tree().change_scene_to_file(
 		contest_scene_path
 	)
-
-
-func _on_next_axie_pressed() -> void:
-	print("Character swap coming next.")

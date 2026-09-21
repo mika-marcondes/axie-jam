@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://dveyac02bqln8"]
 
-[ext_resource type="PackedScene" uid="uid://doqko1m0c85yw" path="res://scenes/puffy/puffy.tscn" id="1_8afob"]
 [ext_resource type="Script" uid="uid://dk61bis0ufe0d" path="res://scripts/player/player_controller.gd" id="1_dovo2"]
 [ext_resource type="Shader" uid="uid://bpri5bjevl3ac" path="res://scenes/player/tuck_aura.gdshader" id="2_gmlin"]
 
@@ -34,7 +33,7 @@ mesh = SubResource("SphereMesh_gmlin")
 [node name="VisualRoot" type="Node3D" parent="AirOffsetRoot/TrickPivot/ContactRoot" unique_id=129650918]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.5, 0)
 
-[node name="Puffy" parent="AirOffsetRoot/TrickPivot/ContactRoot/VisualRoot" unique_id=1836076363 instance=ExtResource("1_8afob")]
+[node name="AxieSlot" type="Node3D" parent="AirOffsetRoot/TrickPivot/ContactRoot/VisualRoot" unique_id=1297829995]
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=1015696964]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6166462, 0)
