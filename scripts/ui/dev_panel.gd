@@ -69,6 +69,10 @@ extends CanvasLayer
 @onready var landing_spin_deceleration_value: Label = %LandingSpinDecelerationValue
 @onready var landing_spin_deceleration_slider: HSlider = %LandingSpinDecelerationSlider
 
+@onready var toggle_hint_label: Label = %ToggleHintLabel
+
+@onready var reset_hint_label: Label = %ResetHintLabel
+
 const MODIFIED_COLOR: Color = Color("#F6C85F")
 const STATUS_READY_COLOR: Color = Color("#72E06A")
 const STATUS_ACTIVE_COLOR: Color = Color("#66C7FF")
@@ -91,8 +95,11 @@ func _ready() -> void:
 
 	update_parameter_labels()
 	update_player_parameter_labels()
+	update_toggle_hint()
+	update_reset_hint()
 
 	setup_parameter_cues()
+	
 
 
 func _process(_delta: float) -> void:
@@ -129,6 +136,8 @@ func configure_slider(
 	slider.min_value = min_value
 	slider.max_value = max_value
 	slider.step = step
+
+	slider.focus_mode = Control.FOCUS_NONE
 
 
 func setup_sliders() -> void:
@@ -363,6 +372,42 @@ func update_boost_debug() -> void:
 		set_status(boost_status_label, "Boost: READY", STATUS_READY_COLOR)
 	else:
 		set_status(boost_status_label, "Boost: AIRBORNE", STATUS_INACTIVE_COLOR)
+
+
+func update_reset_hint() -> void:
+	var events: Array[InputEvent] = InputMap.action_get_events(
+		"reset_scene"
+	)
+
+	var key_name: String = "R"
+
+	for event: InputEvent in events:
+		if event is InputEventKey:
+			key_name = event.as_text()
+			break
+
+	reset_hint_label.text = (
+		"Press [%s] to reset scene"
+		% key_name
+	)
+
+
+func update_toggle_hint() -> void:
+	var events: Array[InputEvent] = InputMap.action_get_events(
+		"toggle_dev_mode"
+	)
+
+	var key_name: String = "F1"
+
+	for event: InputEvent in events:
+		if event is InputEventKey:
+			key_name = event.as_text()
+			break
+
+	toggle_hint_label.text = (
+		"Press [%s] to close DevUI"
+		% key_name
+	)
 
 
 func update_player_debug() -> void:

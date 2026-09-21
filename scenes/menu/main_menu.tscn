@@ -17,10 +17,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5197928, 1.5614364, 2.17368
 fov = 45.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1168195928]
-visible = false
+transform = Transform3D(0.84192204, 0.35657075, 0.4050001, -0.539333, 0.5324551, 0.6523898, 0.016978683, -0.7676909, 0.64059585, 0, 6.707966, 4.244502)
+light_energy = 0.5
 
 [node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1215541921]
-visible = false
+transform = Transform3D(1, 0, 0, 0, -0.03662809, 0.999329, 0, -0.999329, -0.03662809, 0.62618756, 6.0519466, 3.2021077)
+light_energy = 28.0
+spot_range = 6.701
 
 [node name="Stage" type="Node3D" parent="." unique_id=2008299108]
 
