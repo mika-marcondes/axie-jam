@@ -122,57 +122,87 @@ color = Color(0.19, 0.19, 0.19, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MenuUI/TutorialOverlay" unique_id=1446771123]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -300.0
+offset_right = 250.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TutorialPanel" type="PanelContainer" parent="MenuUI/TutorialOverlay/CenterContainer" unique_id=660235898]
+custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel" unique_id=463373328]
+[node name="MarginContainer" type="MarginContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel" unique_id=234401489]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer" unique_id=463373328]
 layout_mode = 2
 
-[node name="PageLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=551004673]
+[node name="PageLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer" unique_id=551004673]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Page"
 horizontal_alignment = 1
 
-[node name="TitleLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=1424204389]
+[node name="TitleLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer" unique_id=1424204389]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 40
 theme_override_font_sizes/font_size = 48
 text = "Title"
 horizontal_alignment = 1
 
-[node name="BodyLabel" type="Label" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=1238311286]
+[node name="MarginContainer" type="MarginContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer" unique_id=465466134]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 40
+
+[node name="BodyLabel" type="RichTextLabel" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer/MarginContainer" unique_id=875927152]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 28
+theme_override_font_sizes/bold_font_size = 30
+theme_override_font_sizes/bold_italics_font_size = 28
+theme_override_font_sizes/italics_font_size = 28
+theme_override_font_sizes/mono_font_size = 28
 text = "Body"
+fit_content = true
 horizontal_alignment = 1
 
-[node name="NavigationRow" type="HBoxContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer" unique_id=838095638]
+[node name="NavigationRow" type="HBoxContainer" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer" unique_id=838095638]
 layout_mode = 2
-size_flags_horizontal = 4
+theme_override_constants/separation = 40
+alignment = 1
 
-[node name="BackButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer/NavigationRow" unique_id=2018711761]
+[node name="BackButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer/NavigationRow" unique_id=2018711761]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "BACK"
 
-[node name="CloseButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer/NavigationRow" unique_id=829942286]
+[node name="CloseButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer/NavigationRow" unique_id=829942286]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "CLOSE"
 
-[node name="NextButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/VBoxContainer/NavigationRow" unique_id=377581422]
+[node name="NextButton" type="Button" parent="MenuUI/TutorialOverlay/CenterContainer/TutorialPanel/MarginContainer/VBoxContainer/NavigationRow" unique_id=377581422]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
-text = "Next"
+text = "NEXT"

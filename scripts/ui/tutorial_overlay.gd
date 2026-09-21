@@ -3,7 +3,7 @@ class_name TutorialOverlay
 
 @onready var page_label: Label = %PageLabel
 @onready var title_label: Label = %TitleLabel
-@onready var body_label: Label = %BodyLabel
+@onready var body_text: RichTextLabel = %BodyLabel
 
 @onready var back_button: Button = %BackButton
 @onready var close_button: Button = %CloseButton
@@ -15,55 +15,47 @@ var current_page: int = 0
 var pages: Array[Dictionary] = [
 	{
 		"title": "PERFORM",
-		"body": """MOVE
-WASD / Left Stick
+		"body": """[center][color=#6EC6FF]Core controls[/color][/center]
 
-CAMERA
-Q / E / Right Stick
+[table=2]
+[cell][b]Move[/b][/cell][cell]W A S D[/cell]
+[cell][b]Camera[/b][/cell][cell]Q / R[/cell]
+[cell][b]Spin[/b][/cell][cell]← / →[/cell]
+[cell][b]Dive[/b][/cell][cell]↑[/cell]
+[cell][b]Tuck[/b][/cell][cell]↓[/cell]
+[cell][b]Jump / Bounce[/b][/cell][cell]Space[/cell]
+[cell][b]Boost[/b][/cell][cell]Left Shift[/cell]
+[/table]
 
-JUMP / BOUNCE
-Hold Space / Cross to charge
-
-SPIN
-Arrow Keys
-
-TUCK
-C
-
-DIVE
-X
-
-BOOST
-Shift / R2"""
+[center][color=#cccccc]Hold jump to charge.
+Release to launch.[/color][/center]"""
 	},
 	{
 		"title": "BUILD YOUR LINE",
-		"body": """Spins, Tuck, Dive and Air
-build your combo score.
+		"body": """[center][color=#6EC6FF]Build score in the air[/color][/center]
 
-Mix directions and styles.
+Spins, Tuck, Dive and Air all add to your [b]score[/b].
 
-Repeating the same trick family
-is worth less.
+Mix [b]direction[/b] and [b]style[/b] to create better lines.
 
-Tricks build SCORE."""
+Repeating the same trick family too much becomes less valuable.
+
+[center][color=#cccccc]Variety = better combos.[/color][/center]"""
 	},
 	{
 		"title": "BOUNCE & BANK",
-		"body": """Watch for the blue glow as you land.
+		"body": """[center][color=#6EC6FF]Watch the landing cue[/color][/center]
 
-LATE       Yellow
-GOOD       Green
-PERFECT!   Purple
-MISS       Red
+[color=#FFD84D][b]Late[/b][/color]
+[color=#59FF85][b]Good[/b][/color]
+[color=#C77DFF][b]Perfect![/b][/color]
+[color=#FF5A5A][b]Miss[/b][/color]
 
-Better bounces build your MULTIPLIER.
+Better bounces increase your [b]multiplier[/b].
 
-Land normally to bank:
+[center][b]Score × Multiplier = Appeal[/b][/center]
 
-SCORE × MULT → APPEAL
-
-Reach the Appeal target
+Reach the [color=#6EC6FF]Appeal target[/color]
 before time runs out."""
 	}
 ]
@@ -71,6 +63,10 @@ before time runs out."""
 
 func _ready() -> void:
 	visible = false
+
+	body_text.bbcode_enabled = true
+	body_text.fit_content = true
+	body_text.scroll_active = false
 
 	back_button.pressed.connect(
 		_on_back_pressed
@@ -90,9 +86,7 @@ func _ready() -> void:
 func open() -> void:
 	current_page = 0
 	visible = true
-
 	update_page()
-
 	next_button.grab_focus()
 
 
@@ -101,9 +95,7 @@ func close() -> void:
 
 
 func update_page() -> void:
-	var page: Dictionary = pages[
-		current_page
-	]
+	var page: Dictionary = pages[current_page]
 
 	page_label.text = "%d / %d" % [
 		current_page + 1,
@@ -114,8 +106,9 @@ func update_page() -> void:
 		page["title"]
 	)
 
-	body_label.text = str(
-		page["body"]
+	body_text.clear()
+	body_text.append_text(
+		str(page["body"])
 	)
 
 	back_button.disabled = (
@@ -133,7 +126,6 @@ func _on_back_pressed() -> void:
 		current_page - 1,
 		0
 	)
-
 	update_page()
 
 
